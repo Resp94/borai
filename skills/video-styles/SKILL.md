@@ -44,6 +44,7 @@ skills/video-styles/
 ├── gallery/            Gallery page (index.html), style list (estilos.js), thumbnails (capas/)
 ├── styles/<slug>/      One folder per style
 │   ├── style.json      Name, category, uses, film length
+│   ├── FICHA.md        Style sheet in pt-BR: look, uses, where the content lives
 │   └── demo/           The style's code: index.html + .js, fonts, data, CREDITS
 ├── core/               Engines: render/ (frames, video, stills, mux), lib.js (easing, noise),
 │                       three/ (3D post-processing), post/ (CRT), fonts/
@@ -73,22 +74,24 @@ The style list with names, categories and uses in Portuguese is in `gallery/esti
 
 ### 2. Make a film in a style
 
-1. Copy the style's `demo/` folder into the run's output, e.g.
+1. Read `styles/<slug>/FICHA.md` when it exists (pt-BR): what the style is good for, where
+   its content lives, what to change and what to keep.
+2. Copy the style's `demo/` folder into the run's output, e.g.
    `squads/{squad}/output/{run}/film/`. Never edit the original under `skills/`.
-2. Read the copied code to find where the content lives: on-screen text, numbers, scene order
+3. Read the copied code to find where the content lives: on-screen text, numbers, scene order
    and timing are usually in `film.js`, `main.js`, `timeline.json` or `lines.json`.
    Change the content, keep the drawing code. Keep text in Portuguese (pt-BR) with accents.
-3. Check frames before rendering the whole film:
+4. Check frames before rendering the whole film:
    ```bash
    node skills/video-styles/core/render/still.mjs <film-folder> 2 8 15 --out <film-folder>/stills
    ```
    Look at the stills; fix overlaps, cut-off text and empty frames.
-4. Render the video (silent, 24 fps, 1920×1080; `--size 1080x1920` for vertical when the
+5. Render the video (silent, 24 fps, 1920×1080; `--size 1080x1920` for vertical when the
    style's code supports it):
    ```bash
    node skills/video-styles/core/render/video.mjs <film-folder> --fps 24 --workers 3 --out <film-folder>/out/video.mp4
    ```
-5. Hand over the `.mp4`. Sound is added outside this skill (the user's own audio flow).
+6. Hand over the `.mp4`. Sound is added outside this skill (the user's own audio flow).
 
 Rendering needs `ffmpeg` on the PATH and, once per machine, the headless browser that matches
 the skill's `playwright-core` (about 100 MB; ask the user before the first download):

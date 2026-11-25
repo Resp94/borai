@@ -1,5 +1,5 @@
 // Dados da galeria: 49 estilos que tocam ao vivo. Fonte: style.json de cada demo do Lemo-Opuscar (MIT), traduzido.
-// [slug, nome, categoria, descrição do filme de exemplo, usos]
+// [slug, nome, categoria, descrição do filme de exemplo, usos, aviso opcional]
 window.ESTILOS = [
  ['art-deco','Art Déco','Gráfico e tipografia','Um grande hotel em 1930: um mensageiro corre entre elevadores e portas giratórias para entregar uma carta antes da meia-noite.',['Luxo e hotelaria','Galas','Convites']],
  ['ascii-crt','Terminal ASCII de CRT','Telas e interfaces','A IA de uma base lunar acorda depois de 40 anos com um sinal da Terra e responde desenhando "casa" com caracteres.',['Ferramentas de dev','Ficção científica','Marcas de tecnologia']],
@@ -9,8 +9,8 @@ window.ESTILOS = [
  ['blueprint','Planta técnica','Diagramas de linha','A planta de um inventor desenha, explode e monta uma máquina de pegar nuvens, e a nuvem começa a chover.',['Engenharia','Lançamento de hardware','Explicações de tecnologia']],
  ['cel-anime-80s','Anime anos 80','Desenhos animados','Uma entregadora cruza uma cidade de neon sob chuva para entregar uma fita antes do amanhecer.',['Clipes','Trailers de jogo','Nostalgia']],
  ['circuit-board','Placa de circuito','Diagramas de linha','Rios viram trilhas de cobre enquanto a energia percorre 2.080 km da represa até o carregador do celular.',['Energia','Cadeias de suprimento','Dispositivos']],
- ['city-symphony','Sinfonia da cidade','Edição e documentário','Um dia em Nova York em time-lapse: rios de luz, cortes no ritmo da música, 1899 ao lado de hoje.',['Filmes de cidade','Montagens musicais','Aberturas']],
- ['countdown','Contagem regressiva em tela dividida','Telas e interfaces','O último minuto de um lançamento de foguete: uma tela vira nove e todas se juntam na ignição.',['Lançamentos','Contagens regressivas','Eventos ao vivo']],
+ ['city-symphony','Sinfonia da cidade','Edição e documentário','Um dia em Nova York em time-lapse: rios de luz, cortes no ritmo da música, 1899 ao lado de hoje.',['Filmes de cidade','Montagens musicais','Aberturas'],'Precisa de mídia própria: a imagem deste filme é montada em Python com vídeos e fotos de terceiros, que não vêm junto. A prévia fica preta.'],
+ ['countdown','Contagem regressiva em tela dividida','Telas e interfaces','O último minuto de um lançamento de foguete: uma tela vira nove e todas se juntam na ignição.',['Lançamentos','Contagens regressivas','Eventos ao vivo'],'Precisa de mídia própria: as fotos e câmeras (NASA) não vêm junto, então a prévia mostra os quadros de imagem vazios.'],
  ['crayon-book','Livro de giz de cera','Pintura e ilustração','A lua não consegue dormir, e uma menina sobe no telhado para cantar uma canção de ninar.',['Livros infantis','Histórias de dormir','Educação infantil']],
  ['dark-keynote','Keynote tech escuro','Telas e interfaces','Filme de lançamento de um app fictício: um cursor coloca centenas de janelas no lugar.',['Lançamento de produto','SaaS','Keynotes']],
  ['dataviz','Histórias com dados','Dados e mapas','Cem anos de temperatura no verão, e o próprio gráfico conta a história.',['Jornalismo de dados','Relatórios','Clima e ciência']],
@@ -21,7 +21,7 @@ window.ESTILOS = [
  ['instruction-manual','Arte de manual de instruções','Diagramas de linha','Dois pais de primeira viagem montam um berço pelo manual; o passo dez nunca esteve no manual.',['Guias de montagem','Instruções de segurança','Onboarding de produto']],
  ['iso-infographic','Infográfico isométrico','Dados e mapas','A viagem do café, da plantação até as suas mãos, num único mundo isométrico.',['Explicação de processos','Cadeias de suprimento','Relatórios anuais']],
  ['isometric-picture-book','Cena isométrica com pessoas','Desenhos animados','Passageiros embarcam num avião isométrico, e a ordem mostra por que um jeito é quase duas vezes mais rápido.',['Regras do dia a dia','Filas','Comparações']],
- ['manga-panels','Quadros de mangá','Desenhos animados','Uma fotógrafa de rua persegue uma luz até o instante em que os pombos voam, dividido em trinta quadros.',['Clipes','Lançamento de produto','Aberturas de anime']],
+ ['manga-panels','Quadros de mangá','Desenhos animados','Uma fotógrafa de rua persegue uma luz até o instante em que os pombos voam, dividido em trinta quadros.',['Clipes','Lançamento de produto','Aberturas de anime'],'Precisa de imagens próprias: as 18 figuras do exemplo foram geradas por IA e não podem ser reaproveitadas, então a prévia mostra os quadros sem figuras.'],
  ['microgame','Frenesi de microgames','Jogos','Um cadete atrapalhado sobrevive a um treinamento de cinco segundos, cada vez mais rápido, até o chefão final.',['Trailers de jogo','Onboarding','Vídeos curtos']],
  ['midcentury-toon','Desenho dos anos 50','Desenhos animados','Um robô aspirador configurado em três passos, como um filme educativo dos anos 1950.',['Guias de configuração','Central de ajuda','Tutoriais']],
  ['neon-tubes','Tubos de neon','Luz e linhas','Um gato de neon sai atrás do peixinho do letreiro no fim da rua e o leva para casa debaixo de chuva.',['Inaugurações e mascotes','Clipes de vida noturna','Vinhetas de cidade e festival']],
@@ -45,7 +45,7 @@ window.ESTILOS = [
  ['spy-titles','Abertura de espionagem anos 60','Filme e fita','Abertura de um filme de espião imaginário de 1964: a perseguição por uma chave até as formas virarem o título.',['Aberturas','Abertura de eventos','Trailers']],
  ['stick-explainer','Explicação com bonecos de palito','Esboço e quadro','Uma corrente de mãos entre você e um desconhecido: os seis graus de separação explicados.',['Explicações de ciência','Redes e ideias sociais','Comparação de dados']],
  ['swiss-motion','Motion design suíço','Gráfico e tipografia','Um pôster de show se diagrama sozinho seguindo cinco regras do design suíço; a quinta é quebrar só uma.',['Identidade de marca','Eventos','Ensino de design']],
- ['telestrator','Telestrador esportivo','Edição e documentário','Perdendo por 3 a 0 no intervalo, o time vira em 12 minutos: congela, desenha, tela dividida, mapa de chutes.',['Análise esportiva','Resumo de partidas','Treinamento']],
+ ['telestrator','Telestrador esportivo','Edição e documentário','Perdendo por 3 a 0 no intervalo, o time vira em 12 minutos: congela, desenha, tela dividida, mapa de chutes.',['Análise esportiva','Resumo de partidas','Treinamento'],'Precisa de mídia própria: a filmagem da partida e as fotos (terceiros) não vêm junto, então a prévia mostra o campo sem imagem.'],
  ['transit-map','Mapa de metrô','Gráfico e tipografia','Um mapa de metrô cresce de uma linha de 6 km em 1993 para 21 linhas e 906 km.',['Transporte','Crescimento ao longo do tempo','Redes']],
  ['ukiyoe','Ukiyo-e','Artes tradicionais','Um viajante caminha rumo a uma montanha distante; cada cena é uma xilogravura japonesa.',['Viagem','Cultura japonesa','Poesia']],
  ['urban-sketch','Croqui urbano com aquarela','Pintura e ilustração','Um parque que é só um esboço a caneta; por onde o vento leva o chapéu de palha, a cor aparece.',['Cidade e viagem','Arquitetura','Marcas de estilo de vida']],

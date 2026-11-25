@@ -36,6 +36,8 @@
   .nome { font-weight: 650; font-size: 16px; margin: 0 0 2px; }
   .cat { color: var(--destaque); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
   .usos { color: var(--suave); font-size: 13px; margin-top: 6px; }
+  .selo { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: #1a1205; background: var(--destaque); }
+  #pAviso { margin: 8px 0 0; padding: 8px 12px; border-left: 3px solid var(--destaque); color: var(--texto); font-size: 14px; }
   .vazio { color: var(--suave); padding: 40px 0; text-align: center; }
 
   /* Player */
@@ -91,6 +93,7 @@
       <h2 id="pNome"></h2>
       <button class="fechar" id="btFechar">Fechar (Esc)</button>
       <p id="pDesc"></p>
+      <p id="pAviso" hidden></p>
       <div class="tags" id="pTags"></div>
     </div>
   </div>
@@ -99,7 +102,7 @@
 <script src="estilos.js"></script>
 <script>
 const $ = id => document.getElementById(id);
-const estilos = window.ESTILOS.map(([slug, nome, cat, desc, usos]) => ({ slug, nome, cat, desc, usos }));
+const estilos = window.ESTILOS.map(([slug, nome, cat, desc, usos, aviso]) => ({ slug, nome, cat, desc, usos, aviso }));
 const categorias = ['Todos', ...[...new Set(estilos.map(e => e.cat))].sort((a, b) => a.localeCompare(b, 'pt'))];
 let filtro = 'Todos';
 
@@ -126,6 +129,7 @@ function montarGrade() {
     c.querySelector('.cat').textContent = e.cat;
     c.querySelector('.nome').textContent = e.nome;
     c.querySelector('.usos').textContent = e.usos.join(' · ');
+    if (e.aviso) { const s = document.createElement('div'); s.className = 'selo'; s.textContent = 'Precisa de mídia própria'; c.querySelector('.corpo').appendChild(s); c.setAttribute('aria-label', 'Ver prévia: ' + e.nome + ' (precisa de mídia própria)'); }
     c.onclick = () => abrir(e);
     $('grade').appendChild(c);
   }
@@ -143,6 +147,7 @@ addEventListener('resize', escalar);
 function abrir(e) {
   fecharFrame();
   $('pNome').textContent = e.nome; $('pDesc').textContent = e.desc;
+  $('pAviso').textContent = e.aviso || ''; $('pAviso').hidden = !e.aviso;
   $('pTags').innerHTML = ''; for (const u of [e.cat, ...e.usos]) { const s = document.createElement('span'); s.textContent = u; $('pTags').appendChild(s); }
   $('carregando').hidden = false; $('carregando').textContent = 'Carregando estilo…';
   $('player').showModal();
