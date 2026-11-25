@@ -15,6 +15,12 @@ Before starting execution:
    - Company context from `_opensquad/_memory/company.md`
    - Squad memory from `squads/{name}/_memory/memories.md`
 
+1a. **Instagram profile memory** — If `squad.yaml` has `instagram_profile`, make sure the profile folder exists:
+   ```bash
+   mkdir -p _opensquad/_memory/instagram/{instagram_profile}
+   ```
+   This folder holds `voice.md`, `swipe.md`, `log.md` and `plan.md`, shared by every squad of that profile. Ready-made `ig-*` agents read and write there (their files say `_opensquad/_memory/instagram/{perfil}/`; `{perfil}` is this `instagram_profile`). Tell every `ig-*` agent this path when it runs, and include it in subagent prompts.
+
 1b. **Memory format migration** — After loading `memories.md`, check whether it uses the new format by scanning for the `## Estilo de Escrita` section header:
    ```bash
    [ -f squads/{name}/_memory/memories.md ] && grep -q "## Estilo de Escrita" squads/{name}/_memory/memories.md && echo "NEW_FORMAT" || echo "OLD_FORMAT"

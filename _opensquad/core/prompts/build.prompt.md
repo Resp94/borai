@@ -80,6 +80,10 @@ Generate these files. Use the Write tool for all file creation — never use Bas
        # - apify
        # - canva
      ```
+   - If `design.yaml` has `instagram_profile`, add it at the top level of `squad.yaml`:
+     ```yaml
+     instagram_profile: navalhado-io   # memory: _opensquad/_memory/instagram/navalhado-io/
+     ```
    - Include a `data:` section listing all reference materials:
      ```yaml
      data:
@@ -110,6 +114,17 @@ Every agent file must include ALL required sections.
 Use knowledge from the best-practices files to write sections with high quality.
 
 The squad-party.csv `path` column points to: `./agents/{agent-id}.agent.md`
+
+### Ready-Made Agents (`from_agent` in design.yaml)
+
+For each agent in `design.yaml` that has `from_agent: {id}` (e.g. `ig-reel`), **copy, do not write**:
+
+1. Copy `agents/{id}.agent.md` → `squads/{code}/agents/{agent-id}.agent.md`.
+2. Copy every file in `agents/{id}/tasks/` → `squads/{code}/agents/{agent-id}/tasks/`.
+3. In the copied agent file, fill only the placeholders in the frontmatter: `id` → `squads/{code}/agents/{agent-id}`, `squad` → `{code}`, `name` → the two-word name from design.yaml, `icon` → the icon from design.yaml. Change nothing else: not the body, not the tasks, not the tool paths.
+4. Do NOT copy `agents/{id}/tools/`. The agent calls its tools at the installed path (`python3 agents/{id}/tools/...`).
+5. In every `ig-*` agent and task copied into the squad, replace the placeholder `{perfil}` in memory paths with the squad's `instagram_profile`.
+6. Ready-made agents already follow the "agents WITH tasks" format, so they pass Gate 1/1b as they are. If a gate fails on one, report it — do not rewrite the agent.
 
 If the agent includes `tasks:` in its frontmatter, ALSO create all referenced task files at `squads/{code}/agents/{agent-id}/tasks/{task}.md` — one file per entry in the `tasks:` list. These files are REQUIRED for the pipeline runner to execute the agent. Never add `tasks:` to the frontmatter without also creating the actual task files.
 
@@ -505,6 +520,7 @@ Additional programmatic checks — read the filesystem to verify:
 - [ ] `squad.yaml` exists and is valid YAML
 - [ ] All `.agent.md` files listed in `squad-party.csv` exist
 - [ ] All task files referenced in agent frontmatter exist
+- [ ] Every agent with `from_agent` was copied from `agents/{id}.agent.md` with only the frontmatter placeholders and `{perfil}` changed (compare the body with the source)
 - [ ] All step files referenced in `pipeline.yaml` exist
 - [ ] Skills listed in `squad.yaml` are installed in `skills/`
 - [ ] Best-practices files referenced by `format:` fields in steps exist in `_opensquad/core/best-practices/`

@@ -180,6 +180,23 @@ Example format list (actual list must be scanned at runtime, not hardcoded):
 
 Save the selected format IDs (e.g., `["instagram-feed", "twitter-thread"]`) as `target_formats`.
 
+### Step 6b — Instagram Profile (Instagram squads ONLY)
+
+Skip unless any selected format starts with `instagram-` or the purpose is about an Instagram account.
+
+Each Instagram profile has its own shared memory (voice, swipe file, post log, weekly plan) at `_opensquad/_memory/instagram/{profile}/`, used by every squad of that profile and by the bundled `ig-*` agents. List the existing profile folders:
+
+```bash
+ls -1 _opensquad/_memory/instagram/ 2>/dev/null
+```
+
+Ask (in the user's language): "Which Instagram profile is this squad for?" Offer the existing folders as numbered options plus "Another profile (type the @)". Normalize the answer into the folder name: drop the `@`, lowercase, turn `.` and `_` into `-`.
+
+- `@navalhado.io` → `navalhado-io`
+- `@resplandes_ia` → `resplandes-ia`
+
+Save it as `instagram_profile`. Do not create the folder here — the Pipeline Runner creates it on the first run.
+
 ---
 
 ### Step 7 — Summary and Confirmation
@@ -194,6 +211,7 @@ Present a structured summary of everything collected:
 > **Tools needed:** {tools_needed}
 > **Investigation:** {enabled/disabled, profiles if any}
 > **Target formats:** {formats or N/A}
+> **Instagram profile:** {instagram_profile or N/A}
 >
 > All good? Or want to change something?"
 
@@ -247,6 +265,8 @@ investigation:
 
 target_formats:  # content squads only; empty list for others
   - "{format-id}"
+
+instagram_profile: "{normalized profile folder, e.g. navalhado-io}"  # Instagram squads only; omit otherwise
 ```
 
 The `squad_code` must be a short, URL-safe slug derived from the squad's purpose (e.g., `content-calendar`, `competitor-tracker`, `lead-notify`).

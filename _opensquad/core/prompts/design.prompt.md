@@ -166,6 +166,26 @@ Design the squad with appropriate agents:
 - Every squad needs a reviewer agent for quality control
 - YAGNI — never create agents that aren't strictly necessary
 
+### Ready-Made Agents (check BEFORE designing from scratch)
+
+The project may have ready-made agents installed in `agents/` (e.g. the 13 Instagram agents `ig-*`, adapted from instagram-agent-skill, MIT). They come with tested tasks and tools, so they replace the equivalent from-scratch agent.
+
+1. List them and read ONLY their YAML frontmatter (not the body):
+   ```bash
+   ls -1 agents/*.agent.md 2>/dev/null
+   ```
+   Fields to use: `name` (role), `category`, `language`, `whenToUse`, `needsInput`, `reads`, `writes`, `tasks`.
+2. For each role the squad needs, use a ready-made agent when **both** are true:
+   - its `whenToUse` covers the role, and
+   - its `language` equals the squad's output language (from `discovery.yaml` → `language`). A `pt-BR` agent is never used in a squad that writes in another language.
+3. A ready-made agent **replaces** the equivalent from-scratch agent (e.g. `ig-reel` instead of an Instagram Reels creator, `ig-carousel` instead of an Instagram feed/carousel creator, `ig-story` instead of a Stories creator, `ig-caption` for captions). Do not create both.
+4. Outside Instagram squads, include a ready-made agent only when it is clearly useful (e.g. `ig-human` as the final de-AI pass on any pt-BR text, `ig-repurpose` in a squad that turns YouTube videos into posts). YAGNI still applies.
+5. **`needsInput`** → add a checkpoint right before that agent's step to collect each listed input from the user.
+6. **`writes` → `reads`** → when two ready-made agents in the squad share a memory file (e.g. `ig-viral` writes `swipe.md`, `ig-reel` reads it), order the writer's step before the reader's.
+7. Ready-made agents keep their body and tasks unchanged; Design only gives them a two-word name and an icon (naming rules below apply to them too).
+8. Record each one in `design.yaml` with `from_agent: {id}` (e.g. `from_agent: ig-reel`). Skip the `artifacts` block for them — their content already exists.
+9. If any `ig-*` agent is used, record `instagram_profile` from `discovery.yaml` in `design.yaml`. Every `ig-*` agent reads and writes the profile memory at `_opensquad/_memory/instagram/{instagram_profile}/`.
+
 ### Agent Naming Convention (MANDATORY — never skip)
 
 Read the user's preferred language from `_opensquad/_memory/preferences.md` → **Output Language**.
@@ -301,6 +321,7 @@ ERRADO: 5 noticias diferentes = NAO sao angulos, sao pautas distintas
 **c. Reviewer agent:**
 - Design from scratch, using knowledge from best-practices `review.md`
 - Tasks: `review.md` — combined scoring + feedback (single pass)
+- When the squad produces Instagram content in pt-BR, the reviewer also scores with the bundled tools as objective criteria: `python3 agents/ig-human/tools/detect.py` (human score, must be APROVADO) and, for Reels, `python3 agents/ig-reel/tools/hookscore.py` (hook score, FORTE ≥ 70)
 - For multi-platform squads: reviewer evaluates ALL platform outputs
 - Apply both global criteria (brand, accuracy, tone) and platform-specific criteria
 
@@ -380,11 +401,14 @@ squad:
   name: "{Squad Name}"
   description: "{one-line description}"
 
+instagram_profile: "{profile folder}"   # only when an ig-* agent is used
+
 agents:
   - id: "{agent-id}"
     name: "{Agent Name}"
     title: "{Agent Title}"
     icon: "{emoji}"
+    from_agent: "{ready-made agent id, e.g. ig-reel}"   # only for ready-made agents; omit artifacts for them
     execution: "inline" | "subagent"
     role_summary: "{what this agent does}"
     skills: []
