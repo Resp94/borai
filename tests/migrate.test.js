@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, mkdir, writeFile, readFile, rename, stat } from 'node:fs/promises';
+import { mkdtemp, rm, mkdir, writeFile, readFile, rename, stat, chmod } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { migrateLegacyProject } from '../src/migrate.js';
+import { migrateLegacyProject, printMigration } from '../src/migrate.js';
 import { init } from '../src/init.js';
 import { update } from '../src/update.js';
 
@@ -27,6 +27,7 @@ async function legacyProject() {
   await put(dir, 'squads/s1/squad.yaml', 'company: "_opensquad/_memory/company.md"\n');
   await put(dir, 'skills/template-designer/SKILL.md', 'Leia _opensquad/core/x.md\nMinha edição\n');
   await put(dir, 'skills/opensquad-skill-creator/SKILL.md', 'old creator\n');
+  await put(dir, 'skills/opensquad-agent-creator/SKILL.md', 'old agent creator\n');
   await put(dir, 'agents/ig-reel.agent.md', 'memória em _opensquad/_memory/instagram/{perfil}/\n');
   await put(dir, '.claude/skills/opensquad/SKILL.md', 'old command\n');
   await put(dir, '.cursor/commands/opensquad.md', 'old command\n');
@@ -149,4 +150,84 @@ test('update para em conflito', async () => {
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
+});
+
+
+test('renomeia as skills criadoras em vez de perder ou duplicar', async () => {
+  const dir = await legacyProject();
+  try {
+    await migrateLegacyProject(dir);
+    assert.equal(await readFile(join(dir, 'skills/borai-skill-creator/SKILL.md'), 'utf-8'), 'old creator\n');
+    assert.equal(await readFile(join(dir, 'skills/borai-agent-creator/SKILL.md'), 'utf-8'), 'old agent creator\n');
+    assert.equal(await exists(join(dir, 'skills/opensquad-agent-creator')), false);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('update lista só arquivos do usuário que ainda citam o nome antigo', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'borai-migrate-'));
+  try {
+    await init(dir, { _skipPrompts: true });
+    await rename(join(dir, '_borai'), join(dir, '_opensquad'));
+    await put(dir, 'CLAUDE.md', 'Use _opensquad/_memory\n');
+    await put(dir, 'estilos/_tools/x.mjs', "const p = '_opensquad/_memory/company.md';\n");
+    const result = await update(dir);
+    assert.equal(result.success, true);
+    assert.deepEqual(result.leftovers, [join('estilos', '_tools', 'x.mjs')]);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('update preserva chaves do usuário no settings do VS Code', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'borai-migrate-'));
+  try {
+    await init(dir, { _skipPrompts: true, _ides: ['vscode-copilot'] });
+    const settingsPath = join(dir, '.vscode/settings.json');
+    const settings = JSON.parse(await readFile(settingsPath, 'utf-8'));
+    settings['editor.fontSize'] = 14;
+    await writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
+    await rename(join(dir, '_borai'), join(dir, '_opensquad'));
+    await update(dir);
+    const after = JSON.parse(await readFile(settingsPath, 'utf-8'));
+    assert.equal(after['editor.fontSize'], 14);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('migração interrompida termina ao rodar de novo', async () => {
+  const dir = await legacyProject();
+  try {
+    // Folder already renamed, but the rest never happened.
+    await rename(join(dir, '_opensquad'), join(dir, '_borai'));
+    const r = await migrateLegacyProject(dir);
+    assert.equal(r.status, 'migrated');
+    assert.equal(await exists(join(dir, '.claude/skills/opensquad')), false);
+    assert.doesNotMatch(await readFile(join(dir, 'squads/s1/squad.yaml'), 'utf-8'), /_opensquad/);
+    assert.ok(await exists(join(dir, 'skills/borai-skill-creator')));
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('erro ao renomear vira mensagem, não stack trace', { skip: process.platform === 'win32' || process.getuid?.() === 0 }, async () => {
+  const dir = await legacyProject();
+  try {
+    await chmod(dir, 0o555);
+    const r = await migrateLegacyProject(dir);
+    assert.equal(r.status, 'error');
+    assert.ok(r.error);
+    assert.ok(await exists(join(dir, '_opensquad/_memory/company.md')));
+  } finally {
+    await chmod(dir, 0o755);
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('mensagem pede para reiniciar a IDE', async () => {
+  const lines = [];
+  printMigration({ status: 'migrated', actions: ['x'], leftovers: [] }, (l) => lines.push(l));
+  assert.match(lines.join('\n'), /[Rr]einicie/);
 });

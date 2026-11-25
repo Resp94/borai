@@ -6,7 +6,7 @@ import { createPrompt } from './prompt.js';
 import { loadLocale, t } from './i18n.js';
 import { listAvailable, installSkill } from './skills.js';
 import { installBundledAgents } from './agents.js';
-import { migrateLegacyProject, printMigration } from './migrate.js';
+import { migrateLegacyProject, printMigration, findLeftovers, printLeftovers } from './migrate.js';
 import { logEvent } from './logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -45,7 +45,10 @@ export async function init(targetDir, options = {}) {
   // Projects created with the old name are migrated first (see migrate.js).
   const migration = await migrateLegacyProject(targetDir);
   printMigration(migration);
-  if (migration.status === 'conflict') return;
+  if (migration.status === 'conflict' || migration.status === 'error') {
+    process.exitCode = 1;
+    return;
+  }
 
   // Check if already initialized
   let isReInit = false;
@@ -98,6 +101,7 @@ export async function init(targetDir, options = {}) {
     await installDependencies(targetDir);
   }
   await writeProjectReadme(targetDir);
+  if (migration.status === 'migrated') printLeftovers(await findLeftovers(targetDir));
 
   // Write user preferences
   const prefsPath = join(targetDir, '_borai', '_memory', 'preferences.md');
@@ -262,7 +266,7 @@ async function copyIdeTemplates(ides, targetDir) {
   }
 }
 
-async function mergeVsCodeSettings(targetDir) {
+export async function mergeVsCodeSettings(targetDir) {
   const settingsPath = join(targetDir, '.vscode', 'settings.json');
 
   let exists = false;
@@ -298,7 +302,7 @@ async function mergeVsCodeSettings(targetDir) {
   await writeFile(settingsPath, JSON.stringify(parsed, null, 2), 'utf-8');
 }
 
-async function mergeQwenSettings(targetDir) {
+export async function mergeQwenSettings(targetDir) {
   const settingsPath = join(targetDir, '.qwen', 'settings.json');
 
   let exists = false;
@@ -338,7 +342,7 @@ async function mergeQwenSettings(targetDir) {
   await writeFile(settingsPath, JSON.stringify(parsed, null, 2), 'utf-8');
 }
 
-async function mergeGeminiSettings(targetDir) {
+export async function mergeGeminiSettings(targetDir) {
   const settingsPath = join(targetDir, '.gemini', 'settings.json');
 
   let exists = false;

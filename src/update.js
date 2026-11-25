@@ -2,11 +2,11 @@ import { cp, mkdir, readFile, stat } from 'node:fs/promises';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadLocale, t } from './i18n.js';
-import { getTemplateEntries, loadSavedLocale, copyCanonicalSources } from './init.js';
+import { getTemplateEntries, loadSavedLocale, copyCanonicalSources, mergeVsCodeSettings, mergeQwenSettings, mergeGeminiSettings } from './init.js';
 import { listAvailable as listAvailableSkills, listInstalled as listInstalledSkills, installSkill, getSkillMeta } from './skills.js';
 import { installBundledAgents } from './agents.js';
 import { logEvent } from './logger.js';
-import { migrateLegacyProject, printMigration } from './migrate.js';
+import { migrateLegacyProject, printMigration, findLeftovers, printLeftovers } from './migrate.js';
 
 async function loadSavedIdes(targetDir) {
   try {
@@ -24,6 +24,12 @@ async function loadSavedIdes(targetDir) {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
+
+const MERGED_SETTINGS = new Set([
+  'vscode-copilot:.vscode/settings.json',
+  'qwen-code:.qwen/settings.json',
+  'gemini-cli:.gemini/settings.json',
+]);
 
 const PROTECTED_PATHS = [
   '_borai/_memory',
@@ -55,7 +61,7 @@ export async function update(targetDir) {
   // 0. Projects created with the old name are migrated first (see migrate.js).
   const migration = await migrateLegacyProject(targetDir);
   printMigration(migration);
-  if (migration.status === 'conflict') return { success: false };
+  if (migration.status === 'conflict' || migration.status === 'error') return { success: false };
 
   // 1. Check initialized
   try {
@@ -128,6 +134,8 @@ export async function update(targetDir) {
     for (const entry of ideEntries) {
       const relPath = relative(ideSrcDir, entry);
       if (isProtected(relPath)) continue;
+      // Settings files the user also edits are merged below, never overwritten.
+      if (MERGED_SETTINGS.has(`${ide}:${relPath.replaceAll('\\', '/')}`)) continue;
 
       const destPath = join(targetDir, relPath);
       await mkdir(dirname(destPath), { recursive: true });
@@ -142,6 +150,9 @@ export async function update(targetDir) {
       count++;
     }
   }
+  if (ides.includes('vscode-copilot')) await mergeVsCodeSettings(targetDir);
+  if (ides.includes('qwen-code')) await mergeQwenSettings(targetDir);
+  if (ides.includes('gemini-cli')) await mergeGeminiSettings(targetDir);
 
   // 6a. Copy canonical sources (core, config, dashboard)
   count += await copyCanonicalSources(targetDir, {
@@ -178,5 +189,9 @@ export async function update(targetDir) {
 
   await logEvent('update', { from: currentVersion || 'unknown', to: newVersion }, targetDir);
 
-  return { success: true };
+  // Only now, after templates were rewritten, list user files still citing the old folder.
+  const leftovers = migration.status === 'migrated' ? await findLeftovers(targetDir) : [];
+  printLeftovers(leftovers);
+
+  return { success: true, leftovers };
 }

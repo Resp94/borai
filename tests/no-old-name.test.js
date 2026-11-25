@@ -12,6 +12,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const EXEMPT_PREFIXES = ['docs/'];
 const EXEMPT_FILES = new Set([
   'CHANGELOG.md', 'LICENSE', 'src/migrate.js', 'tests/migrate.test.js', 'tests/no-old-name.test.js',
+  // Personal, machine-local Claude Code settings (listed in .gitignore); not product code.
+  '.claude/settings.local.json',
 ]);
 const ATTRIBUTION = /renatoasse|Renato Asse/;
 
