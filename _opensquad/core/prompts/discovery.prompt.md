@@ -47,8 +47,11 @@ Ask, showing the types as a **numbered text list** (not as a selector — there 
 **If the user picks a type** (answers with its number or clearly names it):
 - Save `squad_type` = the type's `id`.
 - Pre-fill: `purpose` = the type's `purpose`, `domain` = the type's `domain`, `target_formats` = the type's `target_formats`, `suggested_agents` = the type's `suggested_agents`.
-- Show the pre-filled purpose and ask once: "Anything you want to adjust in this goal?" If the user adjusts or describes something different, their words replace `purpose` (the user always wins over the type).
-- Skip Step 2 (domain) and Step 6 (target formats) — they are already filled. Go to Step 3 to explore what is specific to their company.
+- If the answer has more than the type's number or name (e.g. "Reels de Instagram sobre barbearia", "2, mas para a minha clínica"), merge the extra detail into the pre-filled `purpose` instead of discarding it.
+- Show the pre-filled purpose (translated to the user's language if needed) and ask once: "Anything you want to adjust in this goal?" The user always wins over the type:
+  - A small adjustment within the same kind of squad (topic, audience, detail) → their words replace `purpose`; keep the other pre-fills.
+  - An answer that no longer matches the type (a different kind of squad, e.g. picked "Reels" but now wants a competitor report) → drop `squad_type`, `domain`, `target_formats` and `suggested_agents`, treat their answer as `purpose` and continue as "Describe my own" from Step 2.
+- Skip Step 2 (domain) and Step 6 (target formats) — they are already filled. Step 6b still applies (Instagram profile). Go to Step 3 to explore what is specific to their company.
 
 **If the user picks "Describe my own" or answers with free text instead of a number:** treat the text as `purpose` and continue with Step 2 as usual. Accept any answer — a sentence, a paragraph, bullet points. Do NOT assume any domain.
 
@@ -78,7 +81,7 @@ Based on the detected domain, ask the most relevant contextual question first. W
 
 **If domain = `content`:**
 1. Who is this content for? (multiple choice: current customers / potential leads / general audience / other)
-2. What platforms or formats? (wait for answer — do not list formats yet, that comes in Step 6)
+2. What platforms or formats? (wait for answer — do not list formats yet, that comes in Step 6; skip question 2 when `squad_type` is set — the type already defined the formats)
 3. What tone or personality should the content have? (multiple choice: professional / casual / educational / entertaining / other)
 
 **If domain = `research`:**
@@ -197,7 +200,7 @@ Save the selected format IDs (e.g., `["instagram-feed", "twitter-thread"]`) as `
 
 ### Step 6b — Instagram Profile (Instagram squads ONLY)
 
-Skip unless any selected format starts with `instagram-` or the purpose is about an Instagram account.
+Skip unless any format in `target_formats` (selected or pre-filled by the squad type) starts with `instagram-` or the purpose is about an Instagram account.
 
 Each Instagram profile has its own shared memory (voice, swipe file, post log, weekly plan) at `_opensquad/_memory/instagram/{profile}/`, used by every squad of that profile and by the bundled `ig-*` agents. List the existing profile folders:
 

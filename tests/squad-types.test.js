@@ -83,3 +83,13 @@ test('every suggested agent exists', async () => {
     }
   }
 });
+
+test('discovery prompt keeps the squad type rules wired', async () => {
+  const p = await readFile(join(ROOT, '_opensquad', 'core', 'prompts', 'discovery.prompt.md'), 'utf-8');
+  assert.match(p, /squad-types\.yaml/, 'catalog is read');
+  assert.match(p, /no longer matches the type/, 'changed purpose drops the type');
+  assert.match(p, /merge the extra detail/, 'detail after the type name is kept');
+  assert.match(p, /skip question 2 when `squad_type` is set/i, 'Step 3 does not re-ask formats');
+  assert.match(p, /Step 6b still applies/, 'Instagram profile is still asked');
+  assert.match(p, /selected or pre-filled/, 'Step 6b triggers on pre-filled formats');
+});
