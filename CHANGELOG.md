@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+### Changed
+- Renamed to **Borai** (fork of Opensquad by Renato Asse): `/borai` command, `_borai/` folder, `borai` CLI, `npx github:Resp94/borai`. `update` migrates projects created with the old name. Added a `LICENSE` file keeping the original authorship.
+
 ### Added
 - Squad types catalog (`_opensquad/core/squad-types.yaml`): Discovery offers 8 starting points with a one-line explanation; picking one pre-fills domain, formats and suggested agents, and the Architect still tailors the squad. "Describe my own" keeps the old flow.
 - 13 ready-made Instagram agents in pt-BR (`agents/ig-*`), adapted from instagram-agent-skill (MIT, Jake Schincariol), with tasks and local Python tools adapted to Portuguese: hook score, beat sheet, humanizer/AI detector, caption linter, swipe file, profile rubric.

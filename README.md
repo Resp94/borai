@@ -160,7 +160,7 @@ Quando você fornece URLs de referência durante a criação de um squad (ex: "s
 
 ## Sobre
 
-O opensquad é um projeto open source criado e mantido por [Renato Asse](https://github.com/renatoasse), fundador da [Comunidade Sem Codar](https://semcodar.com.br), uma Escola de IA com mais de 25 mil alunos focada em ensinar pessoas não-técnicas a usar inteligência artificial no trabalho.
+O Borai é um fork do [Opensquad](https://github.com/renatoasse/opensquad), criado por [Renato Asse](https://github.com/renatoasse), fundador da [Comunidade Sem Codar](https://semcodar.com.br), e é mantido por Jonathas Resplandes. O Borai foca em criadores brasileiros: tudo em português, agentes de Instagram prontos e tipos de squad para começar.
 
 O projeto nasceu da necessidade real de automatizar processos de conteúdo e marketing usando agentes de IA — e é disponibilizado gratuitamente para que qualquer pessoa possa usar, estudar e contribuir.
 
@@ -168,7 +168,7 @@ Contribuições da comunidade são bem-vindas. Veja o [CONTRIBUTING.md](CONTRIBU
 
 ## Licença
 
-MIT — use como quiser.
+MIT — use como quiser. Veja o arquivo [LICENSE](LICENSE), que mantém o aviso de autoria de Renato Asse, criador do Opensquad original.
 
 ---
 
@@ -306,7 +306,7 @@ When you provide reference URLs during squad creation (e.g., "follow the style o
 
 ## About
 
-opensquad is an open source project created and maintained by [Renato Asse](https://github.com/renatoasse), founder of [Comunidade Sem Codar](https://semcodar.com.br) (No-Code Community), an AI School with over 25,000 students focused on teaching non-technical people how to use artificial intelligence at work.
+Borai is a fork of [Opensquad](https://github.com/renatoasse/opensquad), created by [Renato Asse](https://github.com/renatoasse), founder of [Comunidade Sem Codar](https://semcodar.com.br) (No-Code Community), and is maintained by Jonathas Resplandes. Borai focuses on Brazilian creators: everything in Portuguese, ready-made Instagram agents and squad types to start from.
 
 The project was born from the real need to automate content and marketing workflows using AI agents — and is made freely available so anyone can use, study, and contribute.
 
@@ -314,4 +314,4 @@ Community contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to l
 
 ## License
 
-MIT — use it however you want.
+MIT — use it however you want. See the [LICENSE](LICENSE) file, which keeps the authorship notice of Renato Asse, creator of the original Opensquad.

@@ -18,7 +18,10 @@
     "orchestration",
     "squads"
   ],
-  "author": "Renato Asse (https://github.com/renatoasse)",
+  "author": "Jonathas Resplandes",
+  "contributors": [
+    "Renato Asse (https://github.com/renatoasse)"
+  ],
   "homepage": "https://github.com/Resp94/borai#readme",
   "repository": {
     "type": "git",
