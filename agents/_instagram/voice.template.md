@@ -1,67 +1,73 @@
 # voice.md
 
-Copy this to `~/.claude/instagram/voice.md` and fill it in. Every skill in the
-pack reads it. Ten minutes here is the difference between scripts you shoot and
-scripts you rewrite.
+Modelo de voz de um perfil de Instagram. A cópia preenchida fica em
+`_opensquad/_memory/instagram/{perfil}/voice.md`, uma por perfil, e todos os
+agentes `ig-*` leem esse arquivo. Dez minutos aqui são a diferença entre
+roteiro que você grava e roteiro que você reescreve.
 
-If you would rather not fill it in by hand, send Claude three of your own reels
-or captions and say "write my voice.md from these". That works better than
-guessing at the answers.
+Se preferir não preencher à mão, mande três reels ou legendas suas e peça
+"monta meu voice.md a partir destes". Funciona melhor do que chutar as
+respostas. Se o arquivo não existir, os agentes montam um rascunho a partir do
+`_opensquad/_memory/company.md` e pedem a sua revisão.
 
-This file matters more on Instagram than anywhere else, because you have to say
-the words out loud. A line you would never say is not a draft, it is a retake.
+No Instagram este arquivo pesa mais que em qualquer outro lugar, porque você
+precisa falar as palavras em voz alta. Uma frase que você nunca diria não é
+rascunho, é regravação.
+
+Adaptado do instagram-agent-skill (MIT, Jake Schincariol).
 
 ---
 
-## Who I am
+## Quem eu sou
 
-- **Name:**
-- **Handle:**
-- **What I do, in one sentence:**
-- **Who I am talking to:** (be specific: "photographers charging under $2,000",
-  not "creatives")
-- **What I sell:**
+- **Nome:**
+- **@ do perfil:**
+- **O que eu faço, em uma frase:**
+- **Com quem eu falo:** (seja específico: "fotógrafos que cobram menos de
+  R$ 2 mil", não "criativos")
+- **O que eu vendo:**
 
-## What I sound like
+## Como eu soo
 
-- **Three of my own reels or captions that sound most like me:** (paste them)
-- **On camera I am:** (fast and loud / dry / calm / funny / deadpan)
-- **Words I actually use:**
-- **Words I would never say out loud:**
-- **Do I swear:** (yes / mild / no)
-- **Emoji in captions:** (never / one, rarely / freely)
-- **Face on camera:** (always / sometimes / faceless)
-- **Voiceover or to-camera:**
-- **Pace:** (words per minute, if you have timed yourself reading a script.
-  `beats.py --wpm` uses this. Most people are between 150 and 200.)
+- **Três reels ou legendas meus que mais parecem comigo:** (cole aqui)
+- **Na câmera eu sou:** (rápido e alto / seco / calmo / engraçado / sério)
+- **Palavras que eu realmente uso:**
+- **Palavras que eu nunca falaria:**
+- **Falo palavrão:** (sim / leve / não)
+- **Emoji na legenda:** (nunca / um, raramente / à vontade)
+- **Rosto na câmera:** (sempre / às vezes / sem rosto)
+- **Locução ou falando para a câmera:**
+- **Ritmo:** (palavras por minuto, se você já cronometrou lendo um roteiro.
+  O `beats.py --wpm` usa isso. O padrão é 150.)
 
-## My positions
+## Minhas posições
 
-Three to five things I believe that some of my audience does not. These are
-where the good reels come from.
+De três a cinco coisas em que eu acredito e parte do meu público não. É daqui
+que saem os bons reels.
 
 1.
 2.
 3.
 
-## Off limits
+## Fora de cogitação
 
-- **Topics I do not post about:**
-- **Clients, numbers or names I cannot say publicly:**
-- **Claims I am not allowed to make:** (regulated industry, employer policy, NDA)
+- **Assuntos sobre os quais eu não posto:**
+- **Clientes, números ou nomes que não posso dizer em público:**
+- **Afirmações que não posso fazer:** (setor regulado, política da empresa,
+  contrato de confidencialidade)
 
-## Proof I can use
+## Provas que posso usar
 
-Real numbers, outcomes and stories I am happy to put my name on. The skills will
-never invent one, so if this section is empty, every draft comes back with
-`{{your number}}` in it.
+Números, resultados e histórias reais em que eu ponho meu nome. Os agentes
+nunca inventam nenhum, então, se esta seção estiver vazia, todo rascunho volta
+com `{{seu número}}`.
 
 -
 -
 -
 
-## The ask
+## O pedido
 
-- **My keyword CTA, if I use one:** (one word, sayable, no spaces)
-- **What the keyword sends them:**
-- **Where my link goes:**
+- **Minha palavra-chave de CTA, se eu uso:** (uma palavra, fácil de falar, sem espaço)
+- **O que a palavra-chave entrega:**
+- **Para onde vai o meu link:**
