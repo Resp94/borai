@@ -74,19 +74,16 @@ npx opensquad update
 
 O Escritório Virtual é uma interface visual 2D que mostra seus agentes trabalhando em tempo real.
 
-**Passo 1 — Gere o dashboard** (na sua IDE):
-
-```
-/opensquad dashboard
-```
-
-**Passo 2 — Sirva localmente** (no terminal):
+**Passo 1 — Inicie o escritório** (no terminal, a partir da raiz do projeto):
 
 ```bash
-npx serve squads/<nome-do-squad>/dashboard
+cd dashboard
+npm run dev
 ```
 
-**Passo 3 —** Abra `http://localhost:3000` no seu navegador.
+Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx opensquad init` já faz isso por você.
+
+**Passo 2 —** Abra o endereço que aparece no terminal (normalmente `http://localhost:5173`). O escritório lê os squads da pasta `squads/` e se atualiza sozinho enquanto um squad está rodando.
 
 ## Criando seu Squad
 
@@ -230,19 +227,16 @@ npx opensquad update
 
 The Virtual Office is a 2D visual interface that shows your agents working in real time.
 
-**Step 1 — Generate the dashboard** (in your IDE):
-
-```
-/opensquad dashboard
-```
-
-**Step 2 — Serve it locally** (in terminal):
+**Step 1 — Start the office** (in the terminal, from the project root):
 
 ```bash
-npx serve squads/<squad-name>/dashboard
+cd dashboard
+npm run dev
 ```
 
-**Step 3 —** Open `http://localhost:3000` in your browser.
+The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx opensquad init` already does it for you.
+
+**Step 2 —** Open the address shown in the terminal (usually `http://localhost:5173`). The office reads the squads in `squads/` and updates live while a squad is running.
 
 ## Creating your Squad
 
