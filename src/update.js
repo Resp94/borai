@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { loadLocale, t } from './i18n.js';
 import { getTemplateEntries, loadSavedLocale, copyCanonicalSources } from './init.js';
 import { listAvailable as listAvailableSkills, listInstalled as listInstalledSkills, installSkill, getSkillMeta } from './skills.js';
+import { installBundledAgents } from './agents.js';
 import { logEvent } from './logger.js';
 
 async function loadSavedIdes(targetDir) {
@@ -154,6 +155,12 @@ export async function update(targetDir) {
     if (meta.type === 'mcp' || meta.type === 'hybrid') continue;
     await installSkill(id, targetDir);
     console.log(`  ${t('createdFile', { path: `skills/${id}/SKILL.md` })}`);
+    count++;
+  }
+
+  // 6c. Install bundled agents not already present (installed ones keep user edits)
+  for (const id of await installBundledAgents(targetDir, { skipExisting: true })) {
+    console.log(`  ${t('createdFile', { path: `agents/${id}.agent.md` })}`);
     count++;
   }
 

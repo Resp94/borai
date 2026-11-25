@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readdir, readFile, rm } from 'node:fs/promises';
+import { copyFile, cp, mkdir, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,7 +23,7 @@ export async function listInstalled(targetDir) {
 export async function listAvailable() {
   try {
     const entries = await readdir(BUNDLED_AGENTS_DIR, { withFileTypes: true });
-    return entries.filter((e) => e.isDirectory()).map((e) => e.name);
+    return entries.filter((e) => e.isDirectory() && !e.name.startsWith('_')).map((e) => e.name);
   } catch {
     return [];
   }
@@ -86,9 +86,20 @@ function validateAgentId(id) {
   }
 }
 
-export async function installAgent(id, targetDir) {
+async function dirExists(path) {
+  try {
+    return (await stat(path)).isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+// Copies AGENT.md to agents/{id}.agent.md and, when present, the agent's
+// tasks/ and tools/ folders to agents/{id}/tasks and agents/{id}/tools.
+export async function installAgent(id, targetDir, { bundledDir = BUNDLED_AGENTS_DIR } = {}) {
   validateAgentId(id);
-  const srcFile = join(BUNDLED_AGENTS_DIR, id, 'AGENT.md');
+  const srcDir = join(bundledDir, id);
+  const srcFile = join(srcDir, 'AGENT.md');
   try {
     await readFile(srcFile);
   } catch (err) {
@@ -98,14 +109,48 @@ export async function installAgent(id, targetDir) {
   const destDir = join(targetDir, 'agents');
   await mkdir(destDir, { recursive: true });
   await copyFile(srcFile, join(destDir, `${id}.agent.md`));
+  for (const sub of ['tasks', 'tools']) {
+    if (await dirExists(join(srcDir, sub))) {
+      await cp(join(srcDir, sub), join(destDir, id, sub), { recursive: true });
+    }
+  }
   metaCache.delete(id);
 }
 
 export async function removeAgent(id, targetDir) {
   validateAgentId(id);
-  const agentFile = join(targetDir, 'agents', `${id}.agent.md`);
-  await rm(agentFile, { force: true });
+  await rm(join(targetDir, 'agents', `${id}.agent.md`), { force: true });
+  await rm(join(targetDir, 'agents', id), { recursive: true, force: true });
   metaCache.delete(id);
+}
+
+// Installs every bundled agent. Shared folders (names starting with "_", e.g.
+// templates the agents read) are copied as-is, never overwriting existing files.
+// With skipExisting, agents already installed are left untouched (user edits survive).
+export async function installBundledAgents(targetDir, { skipExisting = false, bundledDir = BUNDLED_AGENTS_DIR } = {}) {
+  let entries;
+  try {
+    entries = await readdir(bundledDir, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  const installedIds = skipExisting ? await listInstalled(targetDir) : [];
+  const installed = [];
+  for (const e of entries) {
+    if (!e.isDirectory()) continue;
+    if (e.name.startsWith('_')) {
+      await cp(join(bundledDir, e.name), join(targetDir, 'agents', e.name), {
+        recursive: true,
+        force: false,
+        errorOnExist: false,
+      });
+      continue;
+    }
+    if (installedIds.includes(e.name)) continue;
+    await installAgent(e.name, targetDir, { bundledDir });
+    installed.push(e.name);
+  }
+  return installed.sort();
 }
 
 export function clearMetaCache() {

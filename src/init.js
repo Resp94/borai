@@ -5,6 +5,7 @@ import { execSync } from 'node:child_process';
 import { createPrompt } from './prompt.js';
 import { loadLocale, t } from './i18n.js';
 import { listAvailable, installSkill } from './skills.js';
+import { installBundledAgents } from './agents.js';
 import { logEvent } from './logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -84,6 +85,9 @@ export async function init(targetDir, options = {}) {
   await copyCanonicalSources(targetDir);
   await copyIdeTemplates(ides, targetDir);
   await installAllSkills(targetDir);
+  for (const id of await installBundledAgents(targetDir)) {
+    console.log(`  ${t('createdFile', { path: `agents/${id}.agent.md` })}`);
+  }
   if (!options._skipPrompts) {
     await installDependencies(targetDir);
   }
