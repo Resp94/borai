@@ -172,3 +172,17 @@ test('installBundledAgents skips existing', async () => {
     await rm(bundled, { recursive: true });
   }
 });
+
+test('installBundledAgents and listAvailable ignore dirs without AGENT.md', async () => {
+  const bundled = await makeBundle();
+  await mkdir(join(bundled, 'half-done', 'tools'), { recursive: true });
+  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  try {
+    const installed = await installBundledAgents(dir, { bundledDir: bundled });
+    assert.deepEqual(installed, ['fake-agent']);
+    assert.ok(!(await listAvailable({ bundledDir: bundled })).includes('half-done'));
+  } finally {
+    await rm(dir, { recursive: true });
+    await rm(bundled, { recursive: true });
+  }
+});

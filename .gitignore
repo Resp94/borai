@@ -13,3 +13,5 @@ test-results/
 temp/squads/
 .claude/settings.local.json
 dashboards/test-results/
+__pycache__/
+*.pyc

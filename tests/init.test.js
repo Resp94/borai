@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, stat, readFile, readdir, writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { listAvailable as listAvailableAgents } from '../src/agents.js';
 import { init } from '../src/init.js';
 
 test('init creates _opensquad directory structure', async () => {
@@ -289,15 +290,13 @@ test('init with claude-code IDE creates .mcp.json with playwright server', async
   }
 });
 
-test('init does not create agents dir when no bundled agents exist', async () => {
+test('init installs every bundled agent', async () => {
   const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
-    // No bundled agents in dev environment — agents/ should not be created
-    await assert.rejects(
-      stat(join(tempDir, 'agents')),
-      { code: 'ENOENT' }
-    );
+    for (const id of await listAvailableAgents()) {
+      await stat(join(tempDir, 'agents', `${id}.agent.md`));
+    }
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

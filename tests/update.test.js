@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, rm, readFile, writeFile, mkdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { listAvailable as listAvailableAgents } from '../src/agents.js';
 import { init } from '../src/init.js';
 import { update } from '../src/update.js';
 
@@ -149,17 +150,15 @@ test('update returns success when initialized', async () => {
   }
 });
 
-test('update succeeds when no bundled agents exist', async () => {
+test('update succeeds and installs every bundled agent', async () => {
   const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
     const result = await update(tempDir);
     assert.equal(result.success, true);
-    // No bundled agents — agents/ dir should not exist
-    await assert.rejects(
-      stat(join(tempDir, 'agents')),
-      { code: 'ENOENT' }
-    );
+    for (const id of await listAvailableAgents()) {
+      await stat(join(tempDir, 'agents', `${id}.agent.md`));
+    }
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

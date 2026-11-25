@@ -20,12 +20,28 @@ export async function listInstalled(targetDir) {
   }
 }
 
-export async function listAvailable() {
+// Bundled agents are folders that contain an AGENT.md; folders starting with "_"
+// hold shared files, not agents.
+export async function listAvailable({ bundledDir = BUNDLED_AGENTS_DIR } = {}) {
+  let entries;
   try {
-    const entries = await readdir(BUNDLED_AGENTS_DIR, { withFileTypes: true });
-    return entries.filter((e) => e.isDirectory() && !e.name.startsWith('_')).map((e) => e.name);
+    entries = await readdir(bundledDir, { withFileTypes: true });
   } catch {
     return [];
+  }
+  const ids = [];
+  for (const e of entries) {
+    if (!e.isDirectory() || e.name.startsWith('_')) continue;
+    if (await fileExists(join(bundledDir, e.name, 'AGENT.md'))) ids.push(e.name);
+  }
+  return ids.sort();
+}
+
+async function fileExists(path) {
+  try {
+    return (await stat(path)).isFile();
+  } catch {
+    return false;
   }
 }
 
@@ -147,6 +163,7 @@ export async function installBundledAgents(targetDir, { skipExisting = false, bu
       continue;
     }
     if (installedIds.includes(e.name)) continue;
+    if (!(await fileExists(join(bundledDir, e.name, 'AGENT.md')))) continue;
     await installAgent(e.name, targetDir, { bundledDir });
     installed.push(e.name);
   }
