@@ -26,6 +26,7 @@ import json
 import re
 import sys
 import textwrap
+import unicodedata
 
 LIMIT = 2200             # Limite de caracteres da legenda no Instagram.
 TRUNCATE = 125           # Onde o feed corta para "... mais", aproximadamente.
@@ -77,6 +78,7 @@ def render_box(window, truncated, out=sys.stdout, width=52):
 
 
 def analyse(text, cut=TRUNCATE, keywords=None):
+    text = unicodedata.normalize("NFC", text)  # texto colado do macOS vem decomposto
     text = text.rstrip()
     stripped = text.strip()
     chars = len(stripped)

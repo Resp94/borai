@@ -37,6 +37,43 @@ LEX = os.path.join(HERE, "slop.json")
 
 ACOES = {"delete": "apagado", "space": "virou espaço"}
 URL_RE = re.compile(r"https?://\S+|www\.\S+|\S+@\S+\.\S+")
+# Sequências de emoji que dependem de caracteres invisíveis: ZWJ (👨‍💻, 🏳️‍🌈)
+# e tags de subdivisão (🏴󠁧󠁢󠁳󠁣󠁴󠁿). Esses ficam; só o invisível solto sai.
+_EMO = "[\U0001F000-\U0001FAFF\u2600-\u27BF]"
+_MOD = "[\uFE0F\U0001F3FB-\U0001F3FF]*"
+EMOJI_SEQ = re.compile(
+    "(?:" + _EMO + _MOD + "\u200D)+" + _EMO + _MOD
+    + "|\U0001F3F4[\U000E0020-\U000E007F]+")
+
+
+def nfc(text):
+    """Texto colado do macOS vem decomposto (NFD): 'ã' vira 'a' + til. Recompõe."""
+    return unicodedata.normalize("NFC", text)
+
+
+def lex_pattern(entry):
+    """Regex de uma entrada do léxico. "start": true só casa no começo de frase."""
+    body = r"\b" + re.escape(entry["find"]).replace(r"\ ", r"\s+") + r"\b"
+    if entry.get("start"):
+        body = r"(?:^[ \t]*|(?<=[.!?] )|(?<=[.!?]\n))" + body
+    return re.compile(body, re.IGNORECASE | re.MULTILINE)
+
+
+def protect_emoji(text):
+    """Guarda as sequências de emoji para a passada de invisíveis não quebrá-las."""
+    found = []
+
+    def stash(m):
+        found.append(m.group(0))
+        return f"\x00EMO{len(found) - 1}\x00"
+
+    return EMOJI_SEQ.sub(stash, text), found
+
+
+def restore_emoji(text, found):
+    for i, seq in enumerate(found):
+        text = text.replace(f"\x00EMO{i}\x00", seq)
+    return text
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 
 
@@ -133,8 +170,7 @@ def pass_lexical(text, lex):
                      key=lambda e: len(e["find"]), reverse=True)
     for entry in entries:
         find = entry["find"]
-        pattern = re.compile(r"\b" + re.escape(find).replace(r"\ ", r"\s+") + r"\b",
-                             re.IGNORECASE)
+        pattern = lex_pattern(entry)
         found = pattern.findall(text)
         if not found:
             continue
@@ -204,12 +240,15 @@ def restore_capitals(original, text):
 
 
 def humanize(text, lex):
+    text = nfc(text)
     raw_for_case = text
     text, urls = protect_urls(text)
+    text, emojis = protect_emoji(text)
     text, inv = pass_invisible(text, lex)
     text, typo = pass_typographic(text, lex)
     text, lexi = pass_lexical(text, lex)
     text = restore_capitals(raw_for_case, text)
+    text = restore_emoji(text, emojis)
     text = restore_urls(text, urls)
     return text.strip() + "\n", {
         "invisible": inv,

@@ -698,3 +698,16 @@ test('init with _ides trae creates .trae/mcp.json with playwright server', async
     await rm(tempDir, { recursive: true, force: true });
   }
 });
+
+test('re-running init keeps edits to installed agents', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  try {
+    await init(tempDir, { _skipPrompts: true });
+    const agentFile = join(tempDir, 'agents', 'ig-reel.agent.md');
+    await writeFile(agentFile, 'EDITADO', 'utf-8');
+    await init(tempDir, { _skipPrompts: true });
+    assert.equal(await readFile(agentFile, 'utf-8'), 'EDITADO');
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});

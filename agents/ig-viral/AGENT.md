@@ -4,7 +4,7 @@ name: "Caçador de Virais"
 title: "Caçador de Virais"
 icon: "🔎"
 squad: "{code}"
-execution: subagent
+execution: inline
 skills: []
 category: instagram
 language: pt-BR

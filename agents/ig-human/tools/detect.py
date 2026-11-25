@@ -31,6 +31,8 @@ import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LEX = os.path.join(HERE, "slop.json")
+sys.path.insert(0, HERE)
+from humanize import EMOJI_SEQ, lex_pattern, nfc  # noqa: E402
 
 SENT_RE = re.compile(r"[^.!?\n]+[.!?]*")
 WORD_RE = re.compile(r"[^\W_]+(?:[-'’][^\W_]+)*", re.UNICODE)
@@ -94,9 +96,7 @@ def check_slop(text, lex):
         return 50.0, "vazio"
     hits, found = 0, []
     for entry in lex["words"] + lex["phrases"]:
-        pattern = re.compile(r"\b" + re.escape(entry["find"]).replace(r"\ ", r"\s+") + r"\b",
-                             re.IGNORECASE)
-        n = len(pattern.findall(text))
+        n = len(lex_pattern(entry).findall(text))
         if n:
             hits += n
             found.append(entry["find"])
@@ -110,7 +110,8 @@ def check_slop(text, lex):
 
 def check_fingerprint(text):
     """Caracteres que o teclado do celular não produz."""
-    invisible = sum(1 for c in text if unicodedata.category(c) == "Cf")
+    # ZWJ e tags dentro de emoji (👨‍💻, 🏳️‍🌈) não são marca de máquina.
+    invisible = sum(1 for c in EMOJI_SEQ.sub("", text) if unicodedata.category(c) == "Cf")
     em = text.count("—")
     curly = sum(text.count(c) for c in "‘’“”")
     ellip = text.count("…")
@@ -160,6 +161,7 @@ CHECKS = ["RITMO", "CONCRETUDE", "TERMOS DE IA", "TIPOGRAFIA", "VOZ"]
 
 
 def run(text, lex):
+    text = nfc(text)
     results = {}
     results["RITMO"] = check_burstiness(text)
     results["CONCRETUDE"] = check_specificity(text)

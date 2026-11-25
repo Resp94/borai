@@ -32,6 +32,7 @@ import os
 import re
 import statistics
 import sys
+import unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REEL_TOOLS = os.path.normpath(os.path.join(HERE, "..", "..", "ig-reel", "tools"))
@@ -68,8 +69,32 @@ def classify(hook, formulas):
     return None, SEM_FORMULA
 
 
+MULT = {"k": 1_000, "mil": 1_000, "m": 1_000_000, "mi": 1_000_000, "mm": 1_000_000,
+        "milhão": 1_000_000, "milhões": 1_000_000, "milhao": 1_000_000, "milhoes": 1_000_000,
+        "bi": 1_000_000_000}
+COUNT_RE = re.compile(r"^\s*(\d[\d.,]*)\s*([a-zA-Zçãõ]*)\.?\s*$")
+
+
+def parse_count(value):
+    """Lê contagens como o Instagram mostra em pt-BR: '412 mil', '1,2 mi',
+    '12k', '1.2M', '412.000'. Devolve inteiro ou None."""
+    if value is None:
+        return None
+    m = COUNT_RE.match(str(value).replace("\u00a0", " "))
+    if not m:
+        digits = re.sub(r"[^\d]", "", str(value))
+        return int(digits) if digits else None
+    num, unit = m.group(1), m.group(2).lower()
+    if unit and unit in MULT:
+        # Com unidade, vírgula ou ponto são decimais: "1,2 mi", "1.2M".
+        return round(float(num.replace(",", ".")) * MULT[unit])
+    # Sem unidade, ponto e vírgula são separadores de milhar: "412.000".
+    return int(re.sub(r"[^\d]", "", num))
+
+
 def read_rows(path):
     raw = sys.stdin.read() if path == "-" else open(path, encoding="utf-8").read()
+    raw = unicodedata.normalize("NFC", raw)
     lines = [l for l in raw.splitlines() if l.strip() and not l.lstrip().startswith("#")]
     if not lines:
         return []
@@ -85,12 +110,14 @@ def read_rows(path):
             cells += [""] * (len(cols) - len(cells))
         r = dict(zip(cols, [c.strip() for c in cells]))
         try:
-            r["views"] = int(re.sub(r"[^\d]", "", r.get("views", "")) or 0)
+            r["views"] = parse_count(r.get("views", "")) or 0
         except ValueError:
             continue
         for k in ("followers", "median"):
-            digits = re.sub(r"[^\d]", "", r.get(k, "") or "")
-            r[k] = int(digits) if digits else None
+            try:
+                r[k] = parse_count(r.get(k, "") or "")
+            except ValueError:
+                r[k] = None
         if r["views"] and r.get("hook"):
             rows.append(r)
     return rows
@@ -140,7 +167,7 @@ def render(a, out=sys.stdout):
     print("\n" + head, file=out)
     print("=" * max(len(head), 78), file=out)
     for r in a["reels"]:
-        mult = f"{r['outlier']:.1f}x" if r["outlier"] else "   ?"
+        mult = f"{r['outlier']:.1f}x" if r["outlier"] is not None else "   ?"
         score = f"{r['hook_score']:.0f}" if r["hook_score"] is not None else " -"
         fid = f"#{r['formula_id']:<2}" if r["formula_id"] else "-  "
         print(f"  {mult:>7}  gancho {score:>3}  {fid} {r['formula'][:22]:<22} "
@@ -168,7 +195,7 @@ def to_markdown(a):
              f"{a['n']} reels de {a['accounts']} contas. "
              f"Ranqueados pelo múltiplo sobre a {a['baseline']}.", ""]
     for r in a["reels"]:
-        mult = f"{r['outlier']:.1f}x" if r["outlier"] else "?"
+        mult = f"{r['outlier']:.1f}x" if r["outlier"] is not None else "?"
         lines += [f"## {mult}  {r['formula']}  ({r.get('account', '')})",
                   f"- views: {r['views']:,}  base: {r['baseline']:,}",
                   f"- nota do gancho: {r['hook_score']}  palavras: {r['words']}",

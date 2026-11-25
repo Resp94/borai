@@ -30,6 +30,7 @@ import json
 import re
 import statistics
 import sys
+import unicodedata
 
 # Palavras com acento contam; "R$18.000" é uma palavra só (ver words()).
 WORD_RE = re.compile(r"R\$\d[\d.]*(?:,\d+)?|[^\W_]+(?:[-'’%][^\W_]*)*", re.UNICODE)
@@ -114,6 +115,7 @@ def clamp(n):
 
 
 def words(text):
+    text = unicodedata.normalize("NFC", text)
     # "R$ 18.000" é uma palavra quando falado, então é uma palavra aqui também.
     return WORD_RE.findall(re.sub(r"R\$\s+(?=\d)", "R$", text))
 
@@ -217,6 +219,7 @@ CHECKS = ["COMPRIMENTO", "CONCRETUDE", "TENSÃO", "POSIÇÃO", "DESTINATÁRIO"]
 
 
 def run(text):
+    text = unicodedata.normalize("NFC", text)  # texto colado do macOS vem decomposto
     results = {
         "COMPRIMENTO": check_length(text),
         "CONCRETUDE": check_specificity(text),

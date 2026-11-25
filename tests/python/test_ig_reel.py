@@ -83,3 +83,17 @@ class CliTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NfdTest(unittest.TestCase):
+    def test_hookscore_nfd(self):
+        import unicodedata
+        nfc = "Você não precisa de nicho."
+        _, a, _, _ = hookscore.run(nfc)
+        _, b, _, _ = hookscore.run(unicodedata.normalize("NFD", nfc))
+        self.assertEqual(a, b)
+
+    def test_beats_nfd(self):
+        import unicodedata
+        a = beats.analyse(unicodedata.normalize("NFD", "Ação rápida aqui.\nAção de novo."))
+        self.assertEqual(a["total_words"], 6)

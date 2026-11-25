@@ -78,3 +78,42 @@ class CliTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReviewFixesTest(unittest.TestCase):
+    def test_mantem_pedido_de_acao(self):
+        out, _ = humanize.humanize("Perdi R$ 18 mil.\n\nSalva esse post pra não esquecer.", LEX)
+        self.assertIn("Salva esse post pra não esquecer", out)
+        out, _ = humanize.humanize("Me conta nos comentários o que você faria.", LEX)
+        self.assertIn("Me conta nos comentários", out)
+
+    def test_e_essencial_no_meio_da_frase_fica(self):
+        out, _ = humanize.humanize("Dormir bem é essencial para quem trabalha à noite.", LEX)
+        # A palavra pode ser trocada por sinônimo; a locução não pode sumir.
+        self.assertRegex(out, r"^Dormir bem é (?:essencial|importante) para quem trabalha à noite\.")
+
+    def test_e_fundamental_abrindo_frase_sai(self):
+        out, _ = humanize.humanize("Foi difícil. É fundamental dormir cedo.", LEX)
+        self.assertNotIn("fundamental", out)
+
+    def test_emoji_com_zwj_intacto(self):
+        texto = "Programador 👨‍💻 e bandeira 🏳️‍🌈 e Escócia 🏴󠁧󠁢󠁳󠁣󠁴󠁿 aqui."
+        out, _ = humanize.humanize(texto, LEX)
+        self.assertIn("👨‍💻", out)
+        self.assertIn("🏳️‍🌈", out)
+        self.assertIn("🏴󠁧󠁢󠁳󠁣󠁴󠁿", out)
+
+    def test_zwj_solto_continua_saindo(self):
+        out, _ = humanize.humanize("pala‍vra", LEX)
+        self.assertNotIn("‍", out)
+
+    def test_emoji_zwj_nao_conta_como_invisivel(self):
+        score, _ = detect.check_fingerprint("Bom dia 👨‍💻 time.")
+        self.assertEqual(score, 100.0)
+
+    def test_texto_nfd(self):
+        import unicodedata
+        nfd = unicodedata.normalize("NFD", "Ação é você")
+        self.assertEqual(detect.words(detect.nfc(nfd)), ["Ação", "é", "você"])
+        out, _ = humanize.humanize(unicodedata.normalize("NFD", "Vale ressaltar que é bom."), LEX)
+        self.assertNotIn("ressaltar", out)

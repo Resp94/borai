@@ -26,6 +26,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 
 WORD_RE = re.compile(r"R\$\d[\d.]*(?:,\d+)?|[^\W_]+(?:[-'’%][^\W_]*)*", re.UNICODE)
 SENT_RE = re.compile(r"[^.!?]+[.!?]*")
@@ -87,6 +88,7 @@ def split_beats(raw, wps):
 
 
 def analyse(raw, wpm=150, target=None):
+    raw = unicodedata.normalize("NFC", raw)  # texto colado do macOS vem decomposto
     wps = wpm / 60.0
     beats = split_beats(raw, wps)
     if not beats:

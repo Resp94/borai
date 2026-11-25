@@ -71,3 +71,22 @@ class RubricTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReviewFixesTest(unittest.TestCase):
+    def test_contagem_abreviada_ptbr(self):
+        casos = {"412 mil": 412000, "1,2 mi": 1200000, "12k": 12000, "1.2M": 1200000,
+                 "412.000": 412000, "48000": 48000, "3,5 mil": 3500, "2 milhões": 2000000}
+        for texto, esperado in casos.items():
+            with self.subTest(texto=texto):
+                self.assertEqual(swipe.parse_count(texto), esperado)
+
+    def test_swipe_ranqueia_com_mil(self):
+        tsv = "conta\tseguidores\tmediana\tviews\tgancho\n@a\t48 mil\t11 mil\t1,2 mi\tNinguém te conta isso\n"
+        r = run_tool("ig-viral", "swipe.py", ["-"], stdin=tsv)
+        self.assertIn("109.1x", r.stdout)
+
+    def test_caption_nfd(self):
+        import unicodedata
+        a = caption.analyse(unicodedata.normalize("NFD", "Ação concreta.\n\n#educação"))
+        self.assertEqual(a["hashtags"], ["#educação"])

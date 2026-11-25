@@ -177,7 +177,15 @@ The project may have ready-made agents installed in `agents/` (e.g. the 13 Insta
    Fields to use: `name` (role), `category`, `language`, `whenToUse`, `needsInput`, `reads`, `writes`, `tasks`.
 2. For each role the squad needs, use a ready-made agent when **both** are true:
    - its `whenToUse` covers the role, and
-   - its `language` equals the squad's output language (from `discovery.yaml` → `language`). A `pt-BR` agent is never used in a squad that writes in another language.
+   - its `language` matches the squad's output language (from `discovery.yaml` → `language`, which comes from `preferences.md`). The two use different names for the same language — map them like this:
+
+     | agent `language` | `discovery.yaml` / `preferences.md` value |
+     |---|---|
+     | `pt-BR` | `Português (Brasil)` (also `pt-BR`, `Portuguese (Brazil)`) |
+     | `en` | `English` |
+     | `es` | `Español` |
+
+     A `pt-BR` agent is never used in a squad that writes in another language (European Portuguese included).
 3. A ready-made agent **replaces** the equivalent from-scratch agent (e.g. `ig-reel` instead of an Instagram Reels creator, `ig-carousel` instead of an Instagram feed/carousel creator, `ig-story` instead of a Stories creator, `ig-caption` for captions). Do not create both.
 4. Outside Instagram squads, include a ready-made agent only when it is clearly useful (e.g. `ig-human` as the final de-AI pass on any pt-BR text, `ig-repurpose` in a squad that turns YouTube videos into posts). YAGNI still applies.
 5. **`needsInput`** → add a checkpoint right before that agent's step to collect each listed input from the user.

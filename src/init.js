@@ -85,7 +85,7 @@ export async function init(targetDir, options = {}) {
   await copyCanonicalSources(targetDir);
   await copyIdeTemplates(ides, targetDir);
   await installAllSkills(targetDir);
-  for (const id of await installBundledAgents(targetDir)) {
+  for (const id of await installBundledAgents(targetDir, { skipExisting: isReInit })) {
     console.log(`  ${t('createdFile', { path: `agents/${id}.agent.md` })}`);
   }
   if (!options._skipPrompts) {

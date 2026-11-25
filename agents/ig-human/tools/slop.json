@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "note": "Léxico usado por humanize.py e detect.py, em pt-BR. As substituições são palavras simples e mantêm a frase gramatical. Adaptado do instagram-agent-skill (MIT). Edite à vontade: é seu.",
+  "note": "Léxico usado por humanize.py e detect.py, em pt-BR. As substituições são palavras simples e mantêm a frase gramatical. Adaptado do instagram-agent-skill (MIT). Edite à vontade: é seu. Entradas com \"start\": true só valem no começo de frase (\"É fundamental dormir\" sai; \"dormir é fundamental\" fica). Pedidos de ação (salva, comenta, compartilha) não entram aqui: quem cuida do pedido é o caption.py.",
   "invisible": [
     {
       "cp": "U+200B",
@@ -771,17 +771,20 @@
     {
       "find": "vale ressaltar",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "vale destacar que",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "vale lembrar que",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "é importante destacar que",
@@ -801,17 +804,20 @@
     {
       "find": "é fundamental",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "é crucial",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "é essencial",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "cabe destacar que",
@@ -841,22 +847,26 @@
     {
       "find": "imagine um mundo onde",
       "replace": "imagine",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "você já se perguntou",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "deixa eu te contar uma coisa",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "prepare-se para",
       "replace": "",
-      "family": "aberturas"
+      "family": "aberturas",
+      "start": true
     },
     {
       "find": "mergulhar fundo",
@@ -931,22 +941,26 @@
     {
       "find": "em suma",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "em resumo",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "em síntese",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "por fim",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "em última análise",
@@ -961,7 +975,8 @@
     {
       "find": "diante disso",
       "replace": "então",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "com isso em mente",
@@ -971,42 +986,19 @@
     {
       "find": "dito isso",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "a verdade é que",
       "replace": "",
-      "family": "conectivos"
+      "family": "conectivos",
+      "start": true
     },
     {
       "find": "o segredo é",
       "replace": "o ponto é",
       "family": "conectivos"
-    },
-    {
-      "find": "e aí, o que você acha",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "me conta nos comentários",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "deixe sua opinião nos comentários",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "não se esqueça de",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "não esqueça de curtir",
-      "replace": "",
-      "family": "fechamentos"
     },
     {
       "find": "se esse conteúdo te ajudou",
@@ -1016,7 +1008,8 @@
     {
       "find": "e lembre-se",
       "replace": "",
-      "family": "fechamentos"
+      "family": "fechamentos",
+      "start": true
     },
     {
       "find": "o céu é o limite",
@@ -1035,16 +1028,6 @@
     },
     {
       "find": "tamo junto",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "salva esse post pra não esquecer",
-      "replace": "",
-      "family": "fechamentos"
-    },
-    {
-      "find": "compartilha com aquele amigo que precisa ver isso",
       "replace": "",
       "family": "fechamentos"
     },
