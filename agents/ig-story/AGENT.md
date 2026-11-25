@@ -96,8 +96,8 @@ fazer com as respostas.
 
 ## Integration
 
-- **Reads from**: `_opensquad/_memory/instagram/{perfil}/voice.md`, `_opensquad/_memory/instagram/{perfil}/plan.md` (se existir, para seguir o plano da semana), tema do passo anterior.
+- **Reads from**: `_borai/_memory/instagram/{perfil}/voice.md`, `_borai/_memory/instagram/{perfil}/plan.md` (se existir, para seguir o plano da semana), tema do passo anterior.
 - **Writes to**: sequência de Stories no output do run.
 - **Triggers**: passo de Stories do pipeline.
 - **Depends on**: ferramentas do `ig-human`; opcionalmente `ig-plan` antes. Respostas da caixa de pergunta alimentam o `ig-reel` (fórmula #16) e o `ig-dm`.
-- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_opensquad/_memory/company.md` e avise que precisa de revisão.
+- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_borai/_memory/company.md` e avise que precisa de revisão.

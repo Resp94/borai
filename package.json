@@ -1,15 +1,15 @@
 {
-  "name": "opensquad",
+  "name": "borai",
   "version": "0.1.15",
   "description": "Multi-agent orchestration framework — create AI squads that work together",
   "type": "module",
   "bin": {
-    "opensquad": "bin/opensquad.js"
+    "borai": "bin/borai.js"
   },
   "scripts": {
     "test": "node --test tests/*.test.js && python3 -m unittest discover -s tests/python -t .",
     "lint": "eslint src/ bin/ tests/",
-    "version": "node -e \"require('fs').writeFileSync('templates/_opensquad/.opensquad-version', require('./package.json').version + '\\n')\" && git add templates/_opensquad/.opensquad-version"
+    "version": "node -e \"require('fs').writeFileSync('templates/_borai/.borai-version', require('./package.json').version + '\\n')\" && git add templates/_borai/.borai-version"
   },
   "keywords": [
     "claude-code",
@@ -19,13 +19,13 @@
     "squads"
   ],
   "author": "Renato Asse (https://github.com/renatoasse)",
-  "homepage": "https://github.com/Resp94/opensquad#readme",
+  "homepage": "https://github.com/Resp94/borai#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Resp94/opensquad.git"
+    "url": "git+https://github.com/Resp94/borai.git"
   },
   "bugs": {
-    "url": "https://github.com/Resp94/opensquad/issues"
+    "url": "https://github.com/Resp94/borai/issues"
   },
   "license": "MIT",
   "engines": {
@@ -37,7 +37,7 @@
     "agents/",
     "skills/",
     "templates/",
-    "_opensquad/",
+    "_borai/",
     "dashboard/"
   ],
   "dependencies": {

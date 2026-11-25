@@ -96,7 +96,7 @@ quatro conclusões numeradas com evidência e confiança, e termina com "PARE" e
 
 ## Integration
 
-- **Reads from**: números dos posts (checkpoint anterior), `_opensquad/_memory/instagram/{perfil}/log.md`, `agents/ig-reel/tools/hooks.json`.
+- **Reads from**: números dos posts (checkpoint anterior), `_borai/_memory/instagram/{perfil}/log.md`, `agents/ig-reel/tools/hooks.json`.
 - **Writes to**: auditoria no output do run.
 - **Triggers**: passo de análise, antes do planejamento.
 - **Depends on**: checkpoint com os números; depois `ig-plan`, `ig-viral` ou `ig-profile`.

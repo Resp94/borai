@@ -1,14 +1,14 @@
 # voice.md
 
 Modelo de voz de um perfil de Instagram. A cópia preenchida fica em
-`_opensquad/_memory/instagram/{perfil}/voice.md`, uma por perfil, e todos os
+`_borai/_memory/instagram/{perfil}/voice.md`, uma por perfil, e todos os
 agentes `ig-*` leem esse arquivo. Dez minutos aqui são a diferença entre
 roteiro que você grava e roteiro que você reescreve.
 
 Se preferir não preencher à mão, mande três reels ou legendas suas e peça
 "monta meu voice.md a partir destes". Funciona melhor do que chutar as
 respostas. Se o arquivo não existir, os agentes montam um rascunho a partir do
-`_opensquad/_memory/company.md` e pedem a sua revisão.
+`_borai/_memory/company.md` e pedem a sua revisão.
 
 No Instagram este arquivo pesa mais que em qualquer outro lugar, porque você
 precisa falar as palavras em voz alta. Uma frase que você nunca diria não é

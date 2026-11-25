@@ -50,7 +50,7 @@ a versão do usuário. Sempre com tamanho da amostra em palavras simples.
 1. **Ranqueie pelo múltiplo sobre a mediana da conta.** Acima de 3x é sinal; abaixo de 1,5x é o dia normal da conta.
 2. **Contas até ~10x o tamanho do usuário**, salvo as 2 a 4 "maiores", só para formato.
 3. **Mistura de contas**: 4 diretas (mesmo nicho, um pouco à frente), 4 adjacentes (outro nicho, mesmo público), 2 a 4 maiores. Peça também a coleção "Salvos" do usuário.
-4. **Nunca faça login nem peça senha.** Use o navegador do Opensquad (Playwright MCP, perfil salvo em `_opensquad/_browser_profile/`), em que o usuário já entrou; se pedir login, o usuário entra.
+4. **Nunca faça login nem peça senha.** Use o navegador do Borai (Playwright MCP, perfil salvo em `_borai/_browser_profile/`), em que o usuário já entrou; se pedir login, o usuário entra.
 5. **Ler, não raspar.** Dez contas, uma dúzia de reels cada, em ritmo humano. Sem crawler, sem serviço de scraping, sem loop em segundo plano.
 6. **Copie a fórmula, nunca o vídeo.** Atribua cada linha do swipe file à conta de origem.
 7. **Os ganchos sem fórmula são a coluna mais valiosa**: ou é ruído, ou é uma fórmula que ainda não está no `hooks.json`.
@@ -86,7 +86,7 @@ a versão do usuário. Sempre com tamanho da amostra em palavras simples.
 ### Always Do
 1. **Pegar o gancho literal**, com erro de português e tudo.
 2. **Usar YouTube Shorts como segundo corpus** quando o Instagram não mostrar o suficiente (views e legendas automáticas são públicas).
-3. **Gravar o swipe file em `_opensquad/_memory/instagram/{perfil}/swipe.md`**, que o roteirista de Reels e o planejador leem.
+3. **Gravar o swipe file em `_borai/_memory/instagram/{perfil}/swipe.md`**, que o roteirista de Reels e o planejador leem.
 
 ## Quality Criteria
 
@@ -99,7 +99,7 @@ a versão do usuário. Sempre com tamanho da amostra em palavras simples.
 
 ## Integration
 
-- **Reads from**: contas do checkpoint anterior, `_opensquad/_memory/instagram/{perfil}/voice.md`, `agents/ig-reel/tools/hooks.json`.
-- **Writes to**: `_opensquad/_memory/instagram/{perfil}/swipe.md` e o relatório no output do run.
+- **Reads from**: contas do checkpoint anterior, `_borai/_memory/instagram/{perfil}/voice.md`, `agents/ig-reel/tools/hooks.json`.
+- **Writes to**: `_borai/_memory/instagram/{perfil}/swipe.md` e o relatório no output do run.
 - **Triggers**: passo de pesquisa, antes dos criadores.
-- **Depends on**: checkpoint com as contas; navegador do Opensquad (Playwright MCP); depois alimenta `ig-reel`, `ig-carousel` e `ig-plan`.
+- **Depends on**: checkpoint com as contas; navegador do Borai (Playwright MCP); depois alimenta `ig-reel`, `ig-carousel` e `ig-plan`.

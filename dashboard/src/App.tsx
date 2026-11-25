@@ -30,7 +30,7 @@ export function App() {
           letterSpacing: 0.5,
         }}
       >
-        opensquad Dashboard
+        Borai Dashboard
       </header>
 
       {/* Main content */}

@@ -98,8 +98,8 @@ manter.
 
 ## Integration
 
-- **Reads from**: `_opensquad/_memory/instagram/{perfil}/voice.md`, roteiro ou slides do passo anterior, termos de busca do usuário.
+- **Reads from**: `_borai/_memory/instagram/{perfil}/voice.md`, roteiro ou slides do passo anterior, termos de busca do usuário.
 - **Writes to**: legenda pronta e recibo no output do run.
 - **Triggers**: passo de legenda, depois do criador do conteúdo (Reel, carrossel, post).
 - **Depends on**: ferramentas do `ig-human`; conteúdo produzido por `ig-reel`, `ig-carousel` ou outro criador.
-- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_opensquad/_memory/company.md`, salve em `_opensquad/_memory/instagram/{perfil}/voice.md` e avise que precisa de revisão.
+- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_borai/_memory/company.md`, salve em `_borai/_memory/instagram/{perfil}/voice.md` e avise que precisa de revisão.

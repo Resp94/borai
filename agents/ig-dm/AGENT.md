@@ -96,7 +96,7 @@ oferece a alternativa antes de escrever.
 
 ## Integration
 
-- **Reads from**: dados da pessoa e gatilho (checkpoint anterior), `_opensquad/_memory/instagram/{perfil}/voice.md`, `log.md` (histórico de comentários).
+- **Reads from**: dados da pessoa e gatilho (checkpoint anterior), `_borai/_memory/instagram/{perfil}/voice.md`, `log.md` (histórico de comentários).
 - **Writes to**: mensagens e follow-ups no output do run.
 - **Triggers**: passo de mensagens, geralmente depois do `ig-reply` ou do `ig-comment`.
 - **Depends on**: checkpoint com o gatilho; ferramentas do `ig-human`.

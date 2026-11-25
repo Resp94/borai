@@ -1,8 +1,8 @@
-# opensquad
+# Borai
 
 Crie squads de agentes de IA que trabalham juntos — direto da sua IDE.
 
-opensquad é um framework de orquestração multi-agente. Descreva o que você precisa em linguagem natural, e o opensquad cria uma equipe de agentes especializados que trabalham juntos automaticamente.
+Borai é um framework de orquestração multi-agente. Descreva o que você precisa em linguagem natural, e o Borai cria uma equipe de agentes especializados que trabalham juntos automaticamente.
 
 ## Veja em ação
 
@@ -47,13 +47,13 @@ Para qualquer pessoa ou equipe que queira automatizar trabalho operacional e rep
 **Pré-requisito:** Node.js 20+
 
 ```bash
-npx github:Resp94/opensquad init
+npx github:Resp94/borai init
 ```
 
 Para atualizar uma instalação existente:
 
 ```bash
-npx github:Resp94/opensquad update
+npx github:Resp94/borai update
 ```
 
 ## IDEs Suportadas
@@ -81,7 +81,7 @@ cd dashboard
 npm run dev
 ```
 
-Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx github:Resp94/opensquad init` já faz isso por você.
+Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx github:Resp94/borai init` já faz isso por você.
 
 **Passo 2 —** Abra o endereço que aparece no terminal (normalmente `http://localhost:5173`). O escritório lê os squads da pasta `squads/` e se atualiza sozinho enquanto um squad está rodando.
 
@@ -90,23 +90,23 @@ Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm 
 Abra o menu:
 
 ```
-/opensquad
+/borai
 ```
 
-O **Opensquad** vai te mostrar todas as opções disponíveis. 
+O **Borai** vai te mostrar todas as opções disponíveis. 
 
 Para criar um novo squad, basta selecionar a opção, e o **Arquiteto** faz algumas perguntas, projeta o squad e configura tudo automaticamente. Você aprova o design antes de qualquer execução.
 
 ### Agentes de Instagram prontos
 
-O Opensquad vem com 13 agentes de Instagram em pt-BR, instalados em `agents/` no `init`: roteirista de Reels, carrossel e Stories, redator de legendas e de DMs, humanizador de texto, caçador de virais, planejador da semana, avaliador de perfil, auditor de resultados, comentarista, respondedor de comentários e garimpeiro de conteúdo. Ao criar um squad, o Arquiteto escolhe os que fazem sentido. As ferramentas deles (nota de gancho, ficha de tempo, humanizador, revisão de legenda) rodam localmente em Python, e cada perfil de Instagram tem sua própria memória em `_opensquad/_memory/instagram/{perfil}/`. Adaptados do [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
+O Borai vem com 13 agentes de Instagram em pt-BR, instalados em `agents/` no `init`: roteirista de Reels, carrossel e Stories, redator de legendas e de DMs, humanizador de texto, caçador de virais, planejador da semana, avaliador de perfil, auditor de resultados, comentarista, respondedor de comentários e garimpeiro de conteúdo. Ao criar um squad, o Arquiteto escolhe os que fazem sentido. As ferramentas deles (nota de gancho, ficha de tempo, humanizador, revisão de legenda) rodam localmente em Python, e cada perfil de Instagram tem sua própria memória em `_borai/_memory/instagram/{perfil}/`. Adaptados do [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
 
 ## Executando um Squad
 
-Você pode executar o squad novamente com /opensquad, ou pedindo diretamente:
+Você pode executar o squad novamente com /borai, ou pedindo diretamente:
 
 ```
-/opensquad rode o squad <nome-do-squad>
+/borai rode o squad <nome-do-squad>
 ```
 
 O squad executa automaticamente, pausando nos checkpoints onde o agente pede sua aprovação.
@@ -114,12 +114,12 @@ O squad executa automaticamente, pausando nos checkpoints onde o agente pede sua
 ## Exemplos
 
 ```
-/opensquad
-/opensquad crie um Squad que gera carrosséis de Instagram a partir de notícias quentes, cria as imagens e publica automaticamente
-/opensquad quero um Squad que produz todos os materiais de lançamento de infoproduto: páginas de vendas, mensagens de WhatsApp, emails e roteiros de CPL
-/opensquad crie um Squad que escreve tutoriais completos com prints de tela para treinamento de colaboradores
-/opensquad crie um "Squad que pega vídeos do YouTube e gera cortes virais automaticamente"
-/opensquad roda o squad carrosseis-instagram
+/borai
+/borai crie um Squad que gera carrosséis de Instagram a partir de notícias quentes, cria as imagens e publica automaticamente
+/borai quero um Squad que produz todos os materiais de lançamento de infoproduto: páginas de vendas, mensagens de WhatsApp, emails e roteiros de CPL
+/borai crie um Squad que escreve tutoriais completos com prints de tela para treinamento de colaboradores
+/borai crie um "Squad que pega vídeos do YouTube e gera cortes virais automaticamente"
+/borai roda o squad carrosseis-instagram
 
 ```
 
@@ -127,19 +127,19 @@ O squad executa automaticamente, pausando nos checkpoints onde o agente pede sua
 
 | Comando | O que faz |
 |---------|-----------|
-| `/opensquad` | Abre o menu principal |
-| `/opensquad help` | Mostra todos os comandos |
-| `/opensquad create` | Cria um novo squad |
-| `/opensquad run <nome>` | Executa um squad |
-| `/opensquad list` | Lista seus squads |
-| `/opensquad edit <nome>` | Modifica um squad |
-| `/opensquad skills` | Navega pelas skills instaladas |
-| `/opensquad install <nome>` | Instala uma skill do catálogo |
-| `/opensquad uninstall <nome>` | Remove uma skill instalada |
+| `/borai` | Abre o menu principal |
+| `/borai help` | Mostra todos os comandos |
+| `/borai create` | Cria um novo squad |
+| `/borai run <nome>` | Executa um squad |
+| `/borai list` | Lista seus squads |
+| `/borai edit <nome>` | Modifica um squad |
+| `/borai skills` | Navega pelas skills instaladas |
+| `/borai install <nome>` | Instala uma skill do catálogo |
+| `/borai uninstall <nome>` | Remove uma skill instalada |
 
 ## Custo de Tokens
 
-O opensquad é open source e gratuito como software. É possível usá-lo de forma 100% gratuita com stacks como Google Antigravity (free tier com Gemini) ou OpenCode com LLMs locais (Ollama, LM Studio, etc.).
+O Borai é open source e gratuito como software. É possível usá-lo de forma 100% gratuita com stacks como Google Antigravity (free tier com Gemini) ou OpenCode com LLMs locais (Ollama, LM Studio, etc.).
 
 Porém, stacks como Claude Code (Claude Pro/Max) e API da OpenAI consomem tokens pagos:
 
@@ -151,12 +151,12 @@ Se estiver usando uma stack paga, recomendamos monitorar seu consumo de tokens n
 
 ## Sessões de Navegador e Privacidade
 
-Quando você fornece URLs de referência durante a criação de um squad (ex: "siga o estilo do @fulano"), o opensquad usa um navegador headless (Playwright) para visitar essas páginas e extrair padrões de conteúdo.
+Quando você fornece URLs de referência durante a criação de um squad (ex: "siga o estilo do @fulano"), o Borai usa um navegador headless (Playwright) para visitar essas páginas e extrair padrões de conteúdo.
 
-- **Login manual:** na primeira vez que uma plataforma exige login, o opensquad pede para você entrar manualmente e **pergunta se deseja salvar a sessão** para investigações futuras.
-- **Cookies persistentes:** se você autorizar, os cookies ficam salvos localmente em `_opensquad/_browser_profile/`. Esse diretório nunca é commitado no git (`.gitignore`).
+- **Login manual:** na primeira vez que uma plataforma exige login, o Borai pede para você entrar manualmente e **pergunta se deseja salvar a sessão** para investigações futuras.
+- **Cookies persistentes:** se você autorizar, os cookies ficam salvos localmente em `_borai/_browser_profile/`. Esse diretório nunca é commitado no git (`.gitignore`).
 - **Escopo de acesso:** o navegador tem acesso a qualquer URL — não apenas às referências fornecidas. As ações do navegador (navegação, cliques, execução de JavaScript) são controladas pelo agente investigador.
-- **Revogar sessões:** delete a pasta `_opensquad/_browser_profile/` para remover todos os cookies e dados de sessão salvos. Na próxima investigação, um novo login manual será necessário.
+- **Revogar sessões:** delete a pasta `_borai/_browser_profile/` para remover todos os cookies e dados de sessão salvos. Na próxima investigação, um novo login manual será necessário.
 
 ## Sobre
 
@@ -172,11 +172,11 @@ MIT — use como quiser.
 
 ---
 
-# opensquad (English)
+# Borai (English)
 
 Create AI squads that work together — right from your IDE.
 
-opensquad is a multi-agent orchestration framework. Describe what you need in plain language, and opensquad creates a team of specialized agents that work together automatically.
+Borai is a multi-agent orchestration framework. Describe what you need in plain language, and Borai creates a team of specialized agents that work together automatically.
 
 ## See it in action
 
@@ -198,15 +198,15 @@ Example:
 **Prerequisite:** Node.js 20+
 
 ```bash
-npx github:Resp94/opensquad init
+npx github:Resp94/borai init
 ```
 
-> **Note:** Always run your AI IDE from inside the project directory where you ran `npx github:Resp94/opensquad init`. The `/opensquad` command is only available when the IDE is opened in that folder.
+> **Note:** Always run your AI IDE from inside the project directory where you ran `npx github:Resp94/borai init`. The `/borai` command is only available when the IDE is opened in that folder.
 
 To update an existing installation:
 
 ```bash
-npx github:Resp94/opensquad update
+npx github:Resp94/borai update
 ```
 
 ## Supported IDEs
@@ -234,7 +234,7 @@ cd dashboard
 npm run dev
 ```
 
-The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx github:Resp94/opensquad init` already does it for you.
+The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx github:Resp94/borai init` already does it for you.
 
 **Step 2 —** Open the address shown in the terminal (usually `http://localhost:5173`). The office reads the squads in `squads/` and updates live while a squad is running.
 
@@ -243,19 +243,19 @@ The first time, if the dependencies are not installed yet, run `npm install` ins
 Describe what you need:
 
 ```
-/opensquad create "A squad that writes LinkedIn posts about AI trends"
+/borai create "A squad that writes LinkedIn posts about AI trends"
 ```
 
 The **Architect** asks a few questions, designs the squad, and sets everything up automatically. You approve the design before any execution begins.
 
 ### Ready-made Instagram agents
 
-Opensquad ships 13 Instagram agents (pt-BR), installed into `agents/` on `init`: Reels, carousel and Stories writers, caption and DM writers, a text humanizer, a viral-reels researcher, a weekly planner, a profile scorer, a results auditor, a commenter, a comment replier and a repurposer. When you create a squad, the Architect picks the ones that fit. Their tools (hook score, beat sheet, humanizer, caption linter) run locally in Python, and each Instagram profile gets its own memory at `_opensquad/_memory/instagram/{profile}/`. Adapted from [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
+Borai ships 13 Instagram agents (pt-BR), installed into `agents/` on `init`: Reels, carousel and Stories writers, caption and DM writers, a text humanizer, a viral-reels researcher, a weekly planner, a profile scorer, a results auditor, a commenter, a comment replier and a repurposer. When you create a squad, the Architect picks the ones that fit. Their tools (hook score, beat sheet, humanizer, caption linter) run locally in Python, and each Instagram profile gets its own memory at `_borai/_memory/instagram/{profile}/`. Adapted from [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
 
 ## Running a Squad
 
 ```
-/opensquad run <squad-name>
+/borai run <squad-name>
 ```
 
 The squad runs automatically, pausing at checkpoints where the agent asks for your approval.
@@ -263,29 +263,29 @@ The squad runs automatically, pausing at checkpoints where the agent asks for yo
 ## Examples
 
 ```
-/opensquad create "Squad that generates Instagram carousels from trending news, creates the images, and publishes automatically"
-/opensquad create "Squad that produces all infoproduct launch materials: sales pages, WhatsApp messages, emails, and CPL scripts"
-/opensquad create "Squad that writes complete tutorials with screenshots for employee training"
-/opensquad create "Squad that takes YouTube videos and automatically generates viral clips"
+/borai create "Squad that generates Instagram carousels from trending news, creates the images, and publishes automatically"
+/borai create "Squad that produces all infoproduct launch materials: sales pages, WhatsApp messages, emails, and CPL scripts"
+/borai create "Squad that writes complete tutorials with screenshots for employee training"
+/borai create "Squad that takes YouTube videos and automatically generates viral clips"
 ```
 
 ## Commands
 
 | Command | What it does |
 |---------|-------------|
-| `/opensquad` | Open the main menu |
-| `/opensquad help` | Show all commands |
-| `/opensquad create` | Create a new squad |
-| `/opensquad run <name>` | Run a squad |
-| `/opensquad list` | See all your squads |
-| `/opensquad edit <name>` | Modify a squad |
-| `/opensquad skills` | Browse installed skills |
-| `/opensquad install <name>` | Install a skill from catalog |
-| `/opensquad uninstall <name>` | Remove an installed skill |
+| `/borai` | Open the main menu |
+| `/borai help` | Show all commands |
+| `/borai create` | Create a new squad |
+| `/borai run <name>` | Run a squad |
+| `/borai list` | See all your squads |
+| `/borai edit <name>` | Modify a squad |
+| `/borai skills` | Browse installed skills |
+| `/borai install <name>` | Install a skill from catalog |
+| `/borai uninstall <name>` | Remove an installed skill |
 
 ## Token Cost
 
-opensquad is open source and free as software. You can use it completely free with stacks like Google Antigravity (free tier with Gemini) or OpenCode with local LLMs (Ollama, LM Studio, etc.).
+Borai is open source and free as software. You can use it completely free with stacks like Google Antigravity (free tier with Gemini) or OpenCode with local LLMs (Ollama, LM Studio, etc.).
 
 However, stacks like Claude Code (Claude Pro/Max) and OpenAI API consume paid tokens:
 
@@ -297,12 +297,12 @@ If using a paid stack, we recommend monitoring your token usage in your IDE or y
 
 ## Browser Sessions & Privacy
 
-When you provide reference URLs during squad creation (e.g., "follow the style of @someone"), opensquad uses a headless browser (Playwright) to visit those pages and extract content patterns.
+When you provide reference URLs during squad creation (e.g., "follow the style of @someone"), Borai uses a headless browser (Playwright) to visit those pages and extract content patterns.
 
-- **Manual login:** the first time a platform requires login, opensquad asks you to log in manually and **asks whether you want to save the session** for future investigations.
-- **Persistent cookies:** if you agree, cookies are saved locally in `_opensquad/_browser_profile/`. This directory is never committed to git (`.gitignore`).
+- **Manual login:** the first time a platform requires login, Borai asks you to log in manually and **asks whether you want to save the session** for future investigations.
+- **Persistent cookies:** if you agree, cookies are saved locally in `_borai/_browser_profile/`. This directory is never committed to git (`.gitignore`).
 - **Access scope:** the browser can access any URL — not just the references you provided. Browser actions (navigation, clicks, JavaScript execution) are controlled by the investigator agent.
-- **Revoking sessions:** delete the `_opensquad/_browser_profile/` folder to remove all saved cookies and session data. The next investigation will require a fresh manual login.
+- **Revoking sessions:** delete the `_borai/_browser_profile/` folder to remove all saved cookies and session data. The next investigation will require a fresh manual login.
 
 ## About
 

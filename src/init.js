@@ -14,8 +14,8 @@ const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 const PACKAGE_ROOT = join(__dirname, '..');
 
 const CANONICAL_SOURCES = [
-  { src: join(PACKAGE_ROOT, '_opensquad', 'core'), dest: join('_opensquad', 'core') },
-  { src: join(PACKAGE_ROOT, '_opensquad', 'config'), dest: join('_opensquad', 'config') },
+  { src: join(PACKAGE_ROOT, '_borai', 'core'), dest: join('_borai', 'core') },
+  { src: join(PACKAGE_ROOT, '_borai', 'config'), dest: join('_borai', 'config') },
   { src: join(PACKAGE_ROOT, 'dashboard'), dest: 'dashboard' },
 ];
 
@@ -44,13 +44,13 @@ export async function init(targetDir, options = {}) {
   // Check if already initialized
   let isReInit = false;
   try {
-    await stat(join(targetDir, '_opensquad'));
+    await stat(join(targetDir, '_borai'));
     isReInit = true;
   } catch {
     // Not initialized yet — continue
   }
 
-  console.log(isReInit ? '\n  🔄 Opensquad — Re-configure\n' : '\n  🟢 Opensquad — Setup\n');
+  console.log(isReInit ? '\n  🔄 Borai — Re-configure\n' : '\n  🟢 Borai — Setup\n');
 
   // Guided installation (skip in test mode)
   let language = options._language || 'English';
@@ -94,9 +94,9 @@ export async function init(targetDir, options = {}) {
   await writeProjectReadme(targetDir);
 
   // Write user preferences
-  const prefsPath = join(targetDir, '_opensquad', '_memory', 'preferences.md');
+  const prefsPath = join(targetDir, '_borai', '_memory', 'preferences.md');
   await mkdir(dirname(prefsPath), { recursive: true });
-  const prefsContent = `# Opensquad Preferences
+  const prefsContent = `# Borai Preferences
 
 - **User Name:** ${userName}
 - **Output Language:** ${language}
@@ -142,7 +142,7 @@ export async function init(targetDir, options = {}) {
 
 export async function loadSavedLocale(targetDir) {
   try {
-    const prefsPath = join(targetDir, '_opensquad', '_memory', 'preferences.md');
+    const prefsPath = join(targetDir, '_borai', '_memory', 'preferences.md');
     const content = await readFile(prefsPath, 'utf-8');
     const match = content.match(/\*\*Output Language:\*\*\s*(.+)/);
     if (match) {
@@ -325,7 +325,7 @@ async function mergeQwenSettings(targetDir) {
   if (!parsed.mcpServers.playwright) {
     parsed.mcpServers.playwright = {
       command: 'npx',
-      args: ['@playwright/mcp@latest', '--config', '_opensquad/config/playwright.config.json'],
+      args: ['@playwright/mcp@latest', '--config', '_borai/config/playwright.config.json'],
     };
   }
 
@@ -365,7 +365,7 @@ async function mergeGeminiSettings(targetDir) {
   if (!parsed.mcpServers.playwright) {
     parsed.mcpServers.playwright = {
       command: 'npx',
-      args: ['@playwright/mcp@latest', '--config', '_opensquad/config/playwright.config.json'],
+      args: ['@playwright/mcp@latest', '--config', '_borai/config/playwright.config.json'],
     };
   }
 

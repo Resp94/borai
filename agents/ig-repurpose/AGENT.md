@@ -95,7 +95,7 @@ um dia de cada vez.
 
 ## Integration
 
-- **Reads from**: o material longo (do checkpoint anterior), `_opensquad/_memory/instagram/{perfil}/voice.md`, `agents/ig-reel/tools/hooks.json`.
-- **Writes to**: plano da semana no output do run; após aprovação, `_opensquad/_memory/instagram/{perfil}/plan.md`.
+- **Reads from**: o material longo (do checkpoint anterior), `_borai/_memory/instagram/{perfil}/voice.md`, `agents/ig-reel/tools/hooks.json`.
+- **Writes to**: plano da semana no output do run; após aprovação, `_borai/_memory/instagram/{perfil}/plan.md`.
 - **Triggers**: primeiro passo de criação em squads de reaproveitamento.
 - **Depends on**: checkpoint anterior com o material; depois, `ig-reel`, `ig-carousel`, `ig-story` e `ig-human`.

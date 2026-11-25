@@ -6,18 +6,18 @@ import { tmpdir } from 'node:os';
 import { listAvailable as listAvailableAgents } from '../src/agents.js';
 import { init } from '../src/init.js';
 
-test('init creates _opensquad directory structure', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init creates _borai directory structure', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
-    await stat(join(tempDir, '_opensquad'));
-    await stat(join(tempDir, '_opensquad', 'core'));
-    await stat(join(tempDir, '_opensquad', 'core', 'architect.agent.yaml'));
-    await stat(join(tempDir, '_opensquad', 'core', 'runner.pipeline.md'));
-    await stat(join(tempDir, '_opensquad', '_memory'));
-    await stat(join(tempDir, '.claude', 'skills', 'opensquad', 'SKILL.md'));
+    await stat(join(tempDir, '_borai'));
+    await stat(join(tempDir, '_borai', 'core'));
+    await stat(join(tempDir, '_borai', 'core', 'architect.agent.yaml'));
+    await stat(join(tempDir, '_borai', 'core', 'runner.pipeline.md'));
+    await stat(join(tempDir, '_borai', '_memory'));
+    await stat(join(tempDir, '.claude', 'skills', 'borai', 'SKILL.md'));
     await stat(join(tempDir, 'CLAUDE.md'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -25,7 +25,7 @@ test('init creates _opensquad directory structure', async () => {
 });
 
 test('init creates empty squads directory', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
@@ -37,7 +37,7 @@ test('init creates empty squads directory', async () => {
 });
 
 test('init does not overwrite if already initialized', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
@@ -47,39 +47,39 @@ test('init does not overwrite if already initialized', async () => {
   }
 });
 
-test('CLAUDE.md contains Opensquad instructions', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('CLAUDE.md contains Borai instructions', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
     const content = await readFile(join(tempDir, 'CLAUDE.md'), 'utf-8');
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init creates _investigations directory', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
-    await stat(join(tempDir, '_opensquad', '_investigations'));
+    await stat(join(tempDir, '_borai', '_investigations'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init writes preferences file with defaults when prompts skipped', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
-    const prefs = await readFile(join(tempDir, '_opensquad', '_memory', 'preferences.md'), 'utf-8');
+    const prefs = await readFile(join(tempDir, '_borai', '_memory', 'preferences.md'), 'utf-8');
     assert.ok(prefs.includes('Output Language:'));
     assert.ok(prefs.includes('English'));
     assert.ok(prefs.includes('IDEs:'));
@@ -90,25 +90,25 @@ test('init writes preferences file with defaults when prompts skipped', async ()
 });
 
 test('init with language option produces translated preferences', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _language: 'Português (Brasil)' });
 
-    const prefs = await readFile(join(tempDir, '_opensquad', '_memory', 'preferences.md'), 'utf-8');
+    const prefs = await readFile(join(tempDir, '_borai', '_memory', 'preferences.md'), 'utf-8');
     assert.ok(prefs.includes('Português (Brasil)'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
-test('init creates .opensquad-version file', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init creates .borai-version file', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
-    const version = await readFile(join(tempDir, '_opensquad', '.opensquad-version'), 'utf-8');
+    const version = await readFile(join(tempDir, '_borai', '.borai-version'), 'utf-8');
     assert.ok(version.trim().length > 0);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -116,33 +116,33 @@ test('init creates .opensquad-version file', async () => {
 });
 
 test('init creates README.md in user project', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
     const content = await readFile(join(tempDir, 'README.md'), 'utf-8');
-    assert.ok(content.includes('Opensquad'));
+    assert.ok(content.includes('Borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
-test('README.md contains /opensquad command', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('README.md contains /borai command', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
     const content = await readFile(join(tempDir, 'README.md'), 'utf-8');
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('README.md is in Portuguese when language is PT-BR', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _language: 'Português (Brasil)' });
@@ -155,7 +155,7 @@ test('README.md is in Portuguese when language is PT-BR', async () => {
 });
 
 test('README.md is in Spanish when language is Español', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _language: 'Español' });
@@ -169,13 +169,13 @@ test('README.md is in Spanish when language is Español', async () => {
 });
 
 test('init with _ides installs only selected IDE files', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['claude-code'] });
 
     // claude-code files exist
-    await stat(join(tempDir, '.claude', 'skills', 'opensquad', 'SKILL.md'));
+    await stat(join(tempDir, '.claude', 'skills', 'borai', 'SKILL.md'));
     await stat(join(tempDir, 'CLAUDE.md'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -183,60 +183,60 @@ test('init with _ides installs only selected IDE files', async () => {
 });
 
 test('init with _ides codex creates AGENTS.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['codex'] });
 
     const content = await readFile(join(tempDir, 'AGENTS.md'), 'utf-8');
-    assert.ok(content.includes('Opensquad'));
+    assert.ok(content.includes('Borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
-test('init with _ides antigravity creates .agent/rules/opensquad.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides antigravity creates .agent/rules/borai.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['antigravity'] });
 
     const content = await readFile(
-      join(tempDir, '.agent', 'rules', 'opensquad.md'),
+      join(tempDir, '.agent', 'rules', 'borai.md'),
       'utf-8'
     );
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
-test('init with _ides antigravity creates .agent/workflows/opensquad.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides antigravity creates .agent/workflows/borai.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['antigravity'] });
 
     const content = await readFile(
-      join(tempDir, '.agent', 'workflows', 'opensquad.md'),
+      join(tempDir, '.agent', 'workflows', 'borai.md'),
       'utf-8'
     );
     assert.ok(content.includes('description:'));
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with multiple ides records all in preferences', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['claude-code', 'codex'] });
 
-    const prefs = await readFile(join(tempDir, '_opensquad', '_memory', 'preferences.md'), 'utf-8');
+    const prefs = await readFile(join(tempDir, '_borai', '_memory', 'preferences.md'), 'utf-8');
     assert.ok(prefs.includes('claude-code'));
     assert.ok(prefs.includes('codex'));
   } finally {
@@ -245,38 +245,38 @@ test('init with multiple ides records all in preferences', async () => {
 });
 
 test('init creates .gitignore with browser profile exclusion', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
     const content = await readFile(join(tempDir, '.gitignore'), 'utf-8');
-    assert.ok(content.includes('_opensquad/_browser_profile/'));
+    assert.ok(content.includes('_borai/_browser_profile/'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init creates playwright config with persistent context', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
 
     const content = await readFile(
-      join(tempDir, '_opensquad', 'config', 'playwright.config.json'),
+      join(tempDir, '_borai', 'config', 'playwright.config.json'),
       'utf-8'
     );
     const config = JSON.parse(content);
     assert.equal(config.browser.isolated, false);
-    assert.equal(config.browser.userDataDir, '_opensquad/_browser_profile');
+    assert.equal(config.browser.userDataDir, '_borai/_browser_profile');
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with claude-code IDE creates .mcp.json with playwright server', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['claude-code'] });
@@ -291,7 +291,7 @@ test('init with claude-code IDE creates .mcp.json with playwright server', async
 });
 
 test('init installs every bundled agent', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
     for (const id of await listAvailableAgents()) {
@@ -303,7 +303,7 @@ test('init installs every bundled agent', async () => {
 });
 
 test('init installs all bundled skills including MCP skills', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
     const skillsDir = join(tempDir, 'skills');
@@ -316,11 +316,11 @@ test('init installs all bundled skills including MCP skills', async () => {
   }
 });
 
-test('init installs opensquad-skill-creator including subdirs', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init installs borai-skill-creator including subdirs', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
-    const scripts = await readdir(join(tempDir, 'skills', 'opensquad-skill-creator', 'scripts'));
+    const scripts = await readdir(join(tempDir, 'skills', 'borai-skill-creator', 'scripts'));
     assert.ok(scripts.length > 0);
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -328,7 +328,7 @@ test('init installs opensquad-skill-creator including subdirs', async () => {
 });
 
 test('init does not overwrite existing package.json', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const pkgPath = join(tempDir, 'package.json');
     await writeFile(pkgPath, JSON.stringify({ name: 'my-project', version: '2.0.0' }), 'utf-8');
@@ -345,7 +345,7 @@ test('init does not overwrite existing package.json', async () => {
 });
 
 test('init copies package.json to fresh project', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
 
@@ -357,17 +357,17 @@ test('init copies package.json to fresh project', async () => {
   }
 });
 
-test('init with _ides codex creates .agents/skills/opensquad/SKILL.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides codex creates .agents/skills/borai/SKILL.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['codex'] });
 
     const content = await readFile(
-      join(tempDir, '.agents', 'skills', 'opensquad', 'SKILL.md'),
+      join(tempDir, '.agents', 'skills', 'borai', 'SKILL.md'),
       'utf-8'
     );
-    assert.ok(content.includes('name: opensquad'));
+    assert.ok(content.includes('name: borai'));
     assert.ok(content.includes('description:'));
     assert.ok(content.includes('AGENTS.md'));
   } finally {
@@ -375,23 +375,23 @@ test('init with _ides codex creates .agents/skills/opensquad/SKILL.md', async ()
   }
 });
 
-test('init with vscode-copilot creates .github/prompts/opensquad.prompt.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with vscode-copilot creates .github/prompts/borai.prompt.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['vscode-copilot'] });
     const content = await readFile(
-      join(tempDir, '.github', 'prompts', 'opensquad.prompt.md'),
+      join(tempDir, '.github', 'prompts', 'borai.prompt.md'),
       'utf-8'
     );
     assert.ok(content.includes('mode:'));
-    assert.ok(content.includes('opensquad'));
+    assert.ok(content.includes('borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with vscode-copilot creates .vscode/mcp.json with playwright server', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['vscode-copilot'] });
     const content = await readFile(join(tempDir, '.vscode', 'mcp.json'), 'utf-8');
@@ -404,7 +404,7 @@ test('init with vscode-copilot creates .vscode/mcp.json with playwright server',
 });
 
 test('init with vscode-copilot creates .vscode/settings.json with promptFilesLocations when no file exists', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['vscode-copilot'] });
     const content = await readFile(join(tempDir, '.vscode', 'settings.json'), 'utf-8');
@@ -423,7 +423,7 @@ test('init with vscode-copilot creates .vscode/settings.json with promptFilesLoc
 });
 
 test('init with vscode-copilot merges .vscode/settings.json when file already exists', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const vscodePath = join(tempDir, '.vscode');
     await mkdir(vscodePath, { recursive: true });
@@ -448,7 +448,7 @@ test('init with vscode-copilot merges .vscode/settings.json when file already ex
 });
 
 test('init with vscode-copilot skips merge when settings.json has invalid JSON', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const vscodePath = join(tempDir, '.vscode');
     await mkdir(vscodePath, { recursive: true });
@@ -465,25 +465,25 @@ test('init with vscode-copilot skips merge when settings.json has invalid JSON',
   }
 });
 
-test('init with cursor IDE creates .cursor/rules/opensquad.mdc', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with cursor IDE creates .cursor/rules/borai.mdc', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['cursor'] });
 
     const content = await readFile(
-      join(tempDir, '.cursor', 'rules', 'opensquad.mdc'),
+      join(tempDir, '.cursor', 'rules', 'borai.mdc'),
       'utf-8'
     );
     assert.ok(content.includes('alwaysApply: true'));
-    assert.ok(content.includes('opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with cursor IDE creates .cursor/mcp.json with playwright server', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['cursor'] });
 
@@ -497,12 +497,12 @@ test('init with cursor IDE creates .cursor/mcp.json with playwright server', asy
 });
 
 test('init with cursor IDE creates .cursorignore with browser profile exclusion', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['cursor'] });
 
     const content = await readFile(join(tempDir, '.cursorignore'), 'utf-8');
-    assert.ok(content.includes('_opensquad/_browser_profile/'));
+    assert.ok(content.includes('_borai/_browser_profile/'));
     assert.ok(content.includes('node_modules/'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
@@ -510,7 +510,7 @@ test('init with cursor IDE creates .cursorignore with browser profile exclusion'
 });
 
 test('init does not copy dashboard node_modules or dist to user project', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true });
@@ -528,39 +528,39 @@ test('init does not copy dashboard node_modules or dist to user project', async 
   }
 });
 
-test('init with _ides qwen-code creates .qwen/skills/opensquad/SKILL.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides qwen-code creates .qwen/skills/borai/SKILL.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['qwen-code'] });
 
     const content = await readFile(
-      join(tempDir, '.qwen', 'skills', 'opensquad', 'SKILL.md'),
+      join(tempDir, '.qwen', 'skills', 'borai', 'SKILL.md'),
       'utf-8'
     );
-    assert.ok(content.includes('name: opensquad'));
-    assert.ok(content.includes('Opensquad'));
+    assert.ok(content.includes('name: borai'));
+    assert.ok(content.includes('Borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with _ides qwen-code creates QWEN.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['qwen-code'] });
 
     const content = await readFile(join(tempDir, 'QWEN.md'), 'utf-8');
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with _ides qwen-code creates .qwen/settings.json with playwright MCP', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['qwen-code'] });
@@ -575,7 +575,7 @@ test('init with _ides qwen-code creates .qwen/settings.json with playwright MCP'
 });
 
 test('init with _ides qwen-code merges .qwen/settings.json when file already exists', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     const qwenPath = join(tempDir, '.qwen');
@@ -597,39 +597,39 @@ test('init with _ides qwen-code merges .qwen/settings.json when file already exi
   }
 });
 
-test('init with _ides gemini-cli creates .gemini/skills/opensquad/SKILL.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides gemini-cli creates .gemini/skills/borai/SKILL.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['gemini-cli'] });
 
     const content = await readFile(
-      join(tempDir, '.gemini', 'skills', 'opensquad', 'SKILL.md'),
+      join(tempDir, '.gemini', 'skills', 'borai', 'SKILL.md'),
       'utf-8'
     );
-    assert.ok(content.includes('name: opensquad'));
-    assert.ok(content.includes('Opensquad'));
+    assert.ok(content.includes('name: borai'));
+    assert.ok(content.includes('Borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with _ides gemini-cli creates GEMINI.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['gemini-cli'] });
 
     const content = await readFile(join(tempDir, 'GEMINI.md'), 'utf-8');
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with _ides gemini-cli creates .gemini/settings.json with playwright MCP', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['gemini-cli'] });
@@ -644,7 +644,7 @@ test('init with _ides gemini-cli creates .gemini/settings.json with playwright M
 });
 
 test('init with _ides gemini-cli merges .gemini/settings.json when file already exists', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     const geminiPath = join(tempDir, '.gemini');
@@ -666,26 +666,26 @@ test('init with _ides gemini-cli merges .gemini/settings.json when file already 
   }
 });
 
-test('init with _ides trae creates .trae/rules/opensquad.md', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+test('init with _ides trae creates .trae/rules/borai.md', async () => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['trae'] });
 
     const content = await readFile(
-      join(tempDir, '.trae', 'rules', 'opensquad.md'),
+      join(tempDir, '.trae', 'rules', 'borai.md'),
       'utf-8'
     );
     assert.ok(content.includes('alwaysApply: true'));
-    assert.ok(content.includes('Opensquad'));
-    assert.ok(content.includes('/opensquad'));
+    assert.ok(content.includes('Borai'));
+    assert.ok(content.includes('/borai'));
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }
 });
 
 test('init with _ides trae creates .trae/mcp.json with playwright server', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
 
   try {
     await init(tempDir, { _skipPrompts: true, _ides: ['trae'] });
@@ -700,7 +700,7 @@ test('init with _ides trae creates .trae/mcp.json with playwright server', async
 });
 
 test('re-running init keeps edits to installed agents', async () => {
-  const tempDir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const tempDir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await init(tempDir, { _skipPrompts: true });
     const agentFile = join(tempDir, 'agents', 'ig-reel.agent.md');

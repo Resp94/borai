@@ -95,7 +95,7 @@ linha dizendo qual postar e por quê.
 
 ## Integration
 
-- **Reads from**: posts do checkpoint anterior, `_opensquad/_memory/instagram/{perfil}/voice.md`, `plan.md` (lista de engajamento), `log.md` (quem já foi comentado).
-- **Writes to**: comentários no output do run; registro em `_opensquad/_memory/instagram/{perfil}/log.md`.
+- **Reads from**: posts do checkpoint anterior, `_borai/_memory/instagram/{perfil}/voice.md`, `plan.md` (lista de engajamento), `log.md` (quem já foi comentado).
+- **Writes to**: comentários no output do run; registro em `_borai/_memory/instagram/{perfil}/log.md`.
 - **Triggers**: passo de engajamento.
 - **Depends on**: checkpoint com os posts; opcionalmente `ig-plan` antes; ferramentas do `ig-human`.

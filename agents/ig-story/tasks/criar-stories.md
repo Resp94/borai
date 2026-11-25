@@ -16,7 +16,7 @@ no lugar certo e o plano para as respostas.
 
 ## Process
 
-1. Ler `voice.md` e, se existir, `plan.md` do perfil em `_opensquad/_memory/instagram/{perfil}/`.
+1. Ler `voice.md` e, se existir, `plan.md` do perfil em `_borai/_memory/instagram/{perfil}/`.
 2. Definir o objetivo do dia e escolher a figurinha pelo trabalho dela (enquete, caixa de pergunta, quiz, link, contagem regressiva, "sua vez").
 3. Escrever na forma ABERTURA (algo acontecendo hoje, com rosto ou mão) → MEIO (2 quadros de conteúdo) → PEDIDO (quadro 4, uma figurinha) → FECHAMENTO (resposta, resultado ou gancho para amanhã).
 4. Rodar `python3 agents/ig-human/tools/humanize.py falas.txt --report` nas falas e corrigir o que for apontado.

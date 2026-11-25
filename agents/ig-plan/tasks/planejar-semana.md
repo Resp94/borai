@@ -18,12 +18,12 @@ evidência do próprio perfil.
 
 ## Process
 
-1. Ler `voice.md`, `swipe.md` e `log.md` do perfil em `_opensquad/_memory/instagram/{perfil}/`. Se faltar a oferta, o público ou os temas, perguntar numa pergunta agrupada.
+1. Ler `voice.md`, `swipe.md` e `log.md` do perfil em `_borai/_memory/instagram/{perfil}/`. Se faltar a oferta, o público ou os temas, perguntar numa pergunta agrupada.
 2. Transformar cada fato da semana em ângulos concretos e classificar por tipo (Prova, Ensino, Opinião, História, Oferta).
 3. Escolher 4 a 5 posts (pelo menos 3 Reels), sem dois tipos iguais seguidos e sem tema do log das últimas duas semanas; atribuir a cada um uma fórmula do `agents/ig-reel/tools/hooks.json`, priorizando as do swipe file.
-4. Definir horários no fuso do público (seguindo `_opensquad/_memory/algoritmo-e-horario.md`, se existir) e dizer que o gancho pesa mais.
+4. Definir horários no fuso do público (seguindo `_borai/_memory/algoritmo-e-horario.md`, se existir) e dizer que o gancho pesa mais.
 5. Montar a lista de engajamento (5 alcance, 3 pares, 2 compradores) e a orientação de Stories.
-6. Entregar e, após aprovação, gravar em `_opensquad/_memory/instagram/{perfil}/plan.md`.
+6. Entregar e, após aprovação, gravar em `_borai/_memory/instagram/{perfil}/plan.md`.
 
 ## Output Format
 

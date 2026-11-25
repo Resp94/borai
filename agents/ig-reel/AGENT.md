@@ -100,8 +100,8 @@ faz uma pergunta só, agrupada, em vez de escrever em volta do buraco.
 
 ## Integration
 
-- **Reads from**: `_opensquad/_memory/instagram/{perfil}/voice.md`, `_opensquad/_memory/instagram/{perfil}/swipe.md`, `agents/ig-reel/tools/hooks.json`, ideia/tema vindo do passo anterior.
-- **Writes to**: roteiro do Reel no output do run; após aprovação, uma linha em `_opensquad/_memory/instagram/{perfil}/log.md`.
+- **Reads from**: `_borai/_memory/instagram/{perfil}/voice.md`, `_borai/_memory/instagram/{perfil}/swipe.md`, `agents/ig-reel/tools/hooks.json`, ideia/tema vindo do passo anterior.
+- **Writes to**: roteiro do Reel no output do run; após aprovação, uma linha em `_borai/_memory/instagram/{perfil}/log.md`.
 - **Triggers**: passo de criação de Reel no pipeline.
 - **Depends on**: `ig-human` (ferramentas do humanizador); opcionalmente `ig-viral` antes, para o `swipe.md`; `ig-caption` depois, para a legenda.
-- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_opensquad/_memory/company.md`, salve em `_opensquad/_memory/instagram/{perfil}/voice.md` e avise que precisa de revisão no próximo checkpoint.
+- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_borai/_memory/company.md`, salve em `_borai/_memory/instagram/{perfil}/voice.md` e avise que precisa de revisão no próximo checkpoint.

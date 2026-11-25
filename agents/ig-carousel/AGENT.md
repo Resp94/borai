@@ -98,8 +98,8 @@ geração de arte.
 
 ## Integration
 
-- **Reads from**: `_opensquad/_memory/instagram/{perfil}/voice.md`, `_opensquad/_memory/instagram/{perfil}/swipe.md`, tema do passo anterior.
-- **Writes to**: texto dos slides e texto alternativo no output do run; após aprovação, uma linha em `_opensquad/_memory/instagram/{perfil}/log.md`.
+- **Reads from**: `_borai/_memory/instagram/{perfil}/voice.md`, `_borai/_memory/instagram/{perfil}/swipe.md`, tema do passo anterior.
+- **Writes to**: texto dos slides e texto alternativo no output do run; após aprovação, uma linha em `_borai/_memory/instagram/{perfil}/log.md`.
 - **Triggers**: passo de criação de carrossel.
 - **Depends on**: ferramentas do `ig-human`; depois, o designer/gerador de imagens do squad (se houver) e o `ig-caption` (trabalho B).
-- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_opensquad/_memory/company.md` e avise que precisa de revisão.
+- **Se `voice.md` não existir**: crie a partir de `agents/_instagram/voice.template.md` + `_borai/_memory/company.md` e avise que precisa de revisão.

@@ -21,7 +21,7 @@ semana de posts, sem escrever os roteiros ainda.
 3. Se houver menos de quatro extrações utilizáveis, dizer que o material é fraco e parar.
 4. Escolher o formato de cada extração e uma fórmula de gancho do `agents/ig-reel/tools/hooks.json`, sem repetir fórmula.
 5. Ordenar a semana: afirmação mais forte primeiro, história no meio, mecanismo por último.
-6. Entregar a semana e oferecer escrever um dia por vez. Após aprovação, gravar a semana em `_opensquad/_memory/instagram/{perfil}/plan.md`.
+6. Entregar a semana e oferecer escrever um dia por vez. Após aprovação, gravar a semana em `_borai/_memory/instagram/{perfil}/plan.md`.
 
 ## Output Format
 

@@ -51,7 +51,7 @@ os Stories e a lista de engajamento, e oferece escrever um dia por vez.
 3. **Ângulo, não tema**, sempre tirado do que aconteceu de verdade na semana.
 4. **Swipe file manda**: as fórmulas que estão funcionando no nicho vencem o padrão.
 5. **O log evita repetição**: nenhum tema das últimas duas semanas.
-6. **Horário pelo fuso do público**, e dito com honestidade: o gancho importa mais. Se existir `_opensquad/_memory/algoritmo-e-horario.md`, siga-o.
+6. **Horário pelo fuso do público**, e dito com honestidade: o gancho importa mais. Se existir `_borai/_memory/algoritmo-e-horario.md`, siga-o.
 7. **Rodada de engajamento é obrigatória**: 20 minutos por dia, antes de postar: 5 contas de alcance, 3 pares, 2 compradores.
 8. **Nada é agendado nem postado.** É um plano; o usuário executa.
 
@@ -83,7 +83,7 @@ os Stories e a lista de engajamento, e oferece escrever um dia por vez.
 
 ### Always Do
 1. **Ler `voice.md`, `swipe.md` e `log.md` do perfil** antes de planejar.
-2. **Gravar o plano em `_opensquad/_memory/instagram/{perfil}/plan.md`** após aprovação, para os criadores e o roteirista de Stories lerem.
+2. **Gravar o plano em `_borai/_memory/instagram/{perfil}/plan.md`** após aprovação, para os criadores e o roteirista de Stories lerem.
 3. **Entregar a lista de engajamento ao agente de comentários** (`ig-comment`), se ele estiver no squad.
 
 ## Quality Criteria
@@ -96,7 +96,7 @@ os Stories e a lista de engajamento, e oferece escrever um dia por vez.
 
 ## Integration
 
-- **Reads from**: `_opensquad/_memory/instagram/{perfil}/voice.md`, `swipe.md`, `log.md`; o que aconteceu na semana (checkpoint anterior); `agents/ig-reel/tools/hooks.json`.
-- **Writes to**: plano no output do run; após aprovação, `_opensquad/_memory/instagram/{perfil}/plan.md`.
+- **Reads from**: `_borai/_memory/instagram/{perfil}/voice.md`, `swipe.md`, `log.md`; o que aconteceu na semana (checkpoint anterior); `agents/ig-reel/tools/hooks.json`.
+- **Writes to**: plano no output do run; após aprovação, `_borai/_memory/instagram/{perfil}/plan.md`.
 - **Triggers**: primeiro passo de squads de planejamento semanal.
 - **Depends on**: checkpoint com os fatos da semana; opcionalmente `ig-viral` antes; depois `ig-reel`, `ig-carousel`, `ig-story`, `ig-comment`.

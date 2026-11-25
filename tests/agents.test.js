@@ -69,7 +69,7 @@ test('clearMetaCache forces re-read when bundled agents exist', async () => {
 test('installAgent invalidates metaCache', async () => {
   const available = await listAvailable();
   if (available.length === 0) return;
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const id = available[0];
     clearMetaCache();
@@ -85,7 +85,7 @@ test('installAgent invalidates metaCache', async () => {
 test('removeAgent invalidates metaCache', async () => {
   const available = await listAvailable();
   if (available.length === 0) return;
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const id = available[0];
     await installAgent(id, dir);
@@ -102,7 +102,7 @@ test('removeAgent invalidates metaCache', async () => {
 // --- full install (tasks/ and tools/) and bundled auto-install ---
 
 async function makeBundle() {
-  const bundled = await mkdtemp(join(tmpdir(), 'opensquad-bundle-'));
+  const bundled = await mkdtemp(join(tmpdir(), 'borai-bundle-'));
   await mkdir(join(bundled, 'fake-agent', 'tasks'), { recursive: true });
   await mkdir(join(bundled, 'fake-agent', 'tools'), { recursive: true });
   await mkdir(join(bundled, '_shared'), { recursive: true });
@@ -119,7 +119,7 @@ async function exists(p) {
 
 test('installAgent copies tasks and tools', async () => {
   const bundled = await makeBundle();
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await installAgent('fake-agent', dir, { bundledDir: bundled });
     assert.ok(await exists(join(dir, 'agents', 'fake-agent.agent.md')));
@@ -133,7 +133,7 @@ test('installAgent copies tasks and tools', async () => {
 
 test('removeAgent removes agent folder', async () => {
   const bundled = await makeBundle();
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await installAgent('fake-agent', dir, { bundledDir: bundled });
     await removeAgent('fake-agent', dir);
@@ -147,7 +147,7 @@ test('removeAgent removes agent folder', async () => {
 
 test('installBundledAgents installs all and skips underscore dirs', async () => {
   const bundled = await makeBundle();
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const installed = await installBundledAgents(dir, { bundledDir: bundled });
     assert.deepEqual(installed, ['fake-agent']);
@@ -160,7 +160,7 @@ test('installBundledAgents installs all and skips underscore dirs', async () => 
 
 test('installBundledAgents skips existing', async () => {
   const bundled = await makeBundle();
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     await mkdir(join(dir, 'agents'), { recursive: true });
     await writeFile(join(dir, 'agents', 'fake-agent.agent.md'), 'EDITADO', 'utf-8');
@@ -176,7 +176,7 @@ test('installBundledAgents skips existing', async () => {
 test('installBundledAgents and listAvailable ignore dirs without AGENT.md', async () => {
   const bundled = await makeBundle();
   await mkdir(join(bundled, 'half-done', 'tools'), { recursive: true });
-  const dir = await mkdtemp(join(tmpdir(), 'opensquad-test-'));
+  const dir = await mkdtemp(join(tmpdir(), 'borai-test-'));
   try {
     const installed = await installBundledAgents(dir, { bundledDir: bundled });
     assert.deepEqual(installed, ['fake-agent']);

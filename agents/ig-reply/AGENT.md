@@ -95,7 +95,7 @@ pelo humanizador. No fim, o portão: nada é postado sem o "sim".
 
 ## Integration
 
-- **Reads from**: comentários do checkpoint anterior, `_opensquad/_memory/instagram/{perfil}/voice.md`.
+- **Reads from**: comentários do checkpoint anterior, `_borai/_memory/instagram/{perfil}/voice.md`.
 - **Writes to**: respostas agrupadas no output do run.
 - **Triggers**: passo de pós-publicação.
 - **Depends on**: checkpoint com os comentários; perguntas marcadas seguem para o `ig-reel`; palavras-chave podem seguir para o `ig-dm`.

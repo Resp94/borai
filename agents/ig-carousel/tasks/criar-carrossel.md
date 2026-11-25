@@ -18,7 +18,7 @@ qualquer arte, com capa forte, slide 2 independente e slide de resumo.
 
 ## Process
 
-1. Ler `voice.md` e `swipe.md` do perfil em `_opensquad/_memory/instagram/{perfil}/`. Confirmar que o tema tem sequência; se for uma afirmação só, recomendar Reel e parar.
+1. Ler `voice.md` e `swipe.md` do perfil em `_borai/_memory/instagram/{perfil}/`. Confirmar que o tema tem sequência; se for uma afirmação só, recomendar Reel e parar.
 2. Escrever a capa (até 6 palavras + 1 linha de promessa) e o slide 2 (por que importa, em uma frase).
 3. Escrever os slides do meio: uma ideia cada, título de 3 a 7 palavras, até 25 palavras embaixo, numerados (3/8).
 4. Escrever o slide de resumo (a lista inteira, legível sem contexto) e o slide final com um pedido só.

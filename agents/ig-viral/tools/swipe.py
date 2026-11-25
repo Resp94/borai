@@ -22,7 +22,7 @@ Adaptado do instagram-agent-skill (MIT, Jake Schincariol) para pt-BR.
 
 Uso
   python3 swipe.py coletados.tsv
-  python3 swipe.py coletados.tsv --out _opensquad/_memory/instagram/{perfil}/swipe.md
+  python3 swipe.py coletados.tsv --out _borai/_memory/instagram/{perfil}/swipe.md
   python3 swipe.py coletados.tsv --json
 """
 

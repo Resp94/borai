@@ -17,7 +17,7 @@ quem já foi comentado para não repetir.
 
 ## Process
 
-1. Ler `voice.md`, `plan.md` e `log.md` do perfil em `_opensquad/_memory/instagram/{perfil}/`. Avisar se alguma conta foi comentada demais na semana.
+1. Ler `voice.md`, `plan.md` e `log.md` do perfil em `_borai/_memory/instagram/{perfil}/`. Avisar se alguma conta foi comentada demais na semana.
 2. Para cada post, entender o que ele é e escolher o tipo de comentário que cabe (nunca sempre o tipo 1).
 3. Escrever: modo individual, duas opções de tipos diferentes; rodada, uma por post. De uma a três frases, uma ideia, sem abertura proibida.
 4. Rodar `python3 agents/ig-human/tools/humanize.py comentarios.txt --report` e corrigir.

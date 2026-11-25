@@ -96,7 +96,7 @@ do que perdeu mais ponto para o que perdeu menos, e a nova nota no final.
 
 ## Integration
 
-- **Reads from**: print ou texto do perfil (checkpoint anterior), `agents/ig-profile/tools/rubric.json`, `_opensquad/_memory/instagram/{perfil}/voice.md`.
+- **Reads from**: print ou texto do perfil (checkpoint anterior), `agents/ig-profile/tools/rubric.json`, `_borai/_memory/instagram/{perfil}/voice.md`.
 - **Writes to**: tabela, reescritas e nova nota no output do run.
 - **Triggers**: passo de diagnóstico do perfil.
 - **Depends on**: checkpoint com o print do perfil; costuma vir depois do `ig-audit` quando ele aponta problema de conversão.

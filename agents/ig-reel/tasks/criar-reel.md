@@ -20,7 +20,7 @@ pontuados, o texto de tela separado e a ficha de tempo limpa.
 
 ## Process
 
-1. Ler `_opensquad/_memory/instagram/{perfil}/voice.md` (criar a partir de `agents/_instagram/voice.template.md` + `company.md` se não existir) e, se existir, `swipe.md`.
+1. Ler `_borai/_memory/instagram/{perfil}/voice.md` (criar a partir de `agents/_instagram/voice.template.md` + `company.md` se não existir) e, se existir, `swipe.md`.
 2. Ler `agents/ig-reel/tools/hooks.json`. Se a ideia não tem um fato concreto, fazer UMA pergunta agrupada: o que aconteceu, com quem, quanto custou ou rendeu.
 3. Escolher três fórmulas diferentes que servem à ideia (priorizando as que o `swipe.md` mostra funcionando) e escrever, para cada uma, a frase falada e a frase de tela.
 4. Gravar as três frases faladas em um arquivo e rodar `python3 agents/ig-reel/tools/hookscore.py ganchos.txt`. Se a primeira estiver abaixo de 50, voltar ao passo 3.

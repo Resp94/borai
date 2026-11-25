@@ -5,7 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CATALOG = join(ROOT, '_opensquad', 'core', 'squad-types.yaml');
+const CATALOG = join(ROOT, '_borai', 'core', 'squad-types.yaml');
 const IDS = [
   'instagram-carrossel-noticias', 'instagram-reels', 'instagram-semana', 'youtube-para-instagram',
   'lancamento-infoproduto', 'linkedin-posts', 'tutoriais-com-prints', 'monitor-concorrentes',
@@ -71,7 +71,7 @@ test('every type has all fields', async () => {
 test('every target format exists', async () => {
   for (const t of await loadTypes()) {
     for (const f of t.target_formats) {
-      assert.ok(await exists(join(ROOT, '_opensquad', 'core', 'best-practices', `${f}.md`)), `${t.id}: ${f}`);
+      assert.ok(await exists(join(ROOT, '_borai', 'core', 'best-practices', `${f}.md`)), `${t.id}: ${f}`);
     }
   }
 });
@@ -85,7 +85,7 @@ test('every suggested agent exists', async () => {
 });
 
 test('discovery prompt keeps the squad type rules wired', async () => {
-  const p = await readFile(join(ROOT, '_opensquad', 'core', 'prompts', 'discovery.prompt.md'), 'utf-8');
+  const p = await readFile(join(ROOT, '_borai', 'core', 'prompts', 'discovery.prompt.md'), 'utf-8');
   assert.match(p, /squad-types\.yaml/, 'catalog is read');
   assert.match(p, /no longer matches the type/, 'changed purpose drops the type');
   assert.match(p, /merge the extra detail/, 'detail after the type name is kept');

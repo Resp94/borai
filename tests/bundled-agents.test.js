@@ -129,7 +129,7 @@ test('agents that use profile memory name the per-profile folder', async () => {
     const fm = frontmatter(await readFile(join(AGENTS, id, 'AGENT.md'), 'utf-8'));
     const used = [...listField(fm, 'reads'), ...listField(fm, 'writes')];
     if (used.length) {
-      assert.match(text, /_opensquad\/_memory\/instagram\/\{perfil\}\//, `${id}: memory path`);
+      assert.match(text, /_borai\/_memory\/instagram\/\{perfil\}\//, `${id}: memory path`);
     }
   }
 });
