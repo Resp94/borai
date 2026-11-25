@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, rm, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, mkdir, writeFile, utimes } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { listRuns, formatDuration } from '../src/runs.js';
@@ -108,15 +108,35 @@ test('listRuns sorts by startedAt descending, not by name', async () => {
   }
 });
 
-test('listRuns puts runs without startedAt last', async () => {
+test('listRuns orders runs without startedAt by folder modification time', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'osq-runs-'));
   try {
+    const out = join(dir, 'squads', 'my-squad', 'output');
     await makeRun(dir, 'dated', { status: 'completed', startedAt: '2026-03-17T12:00:00Z' });
     await makeRun(dir, 'untitled-2');
     await makeRun(dir, 'untitled-1', { status: 'running' });
+    await utimes(join(out, 'untitled-2'), new Date('2026-03-18T12:00:00Z'), new Date('2026-03-18T12:00:00Z'));
+    await utimes(join(out, 'untitled-1'), new Date('2026-03-16T12:00:00Z'), new Date('2026-03-16T12:00:00Z'));
 
     const runs = await listRuns(null, dir);
-    assert.deepEqual(runs.map((r) => r.runId), ['dated', 'untitled-1', 'untitled-2']);
+    assert.deepEqual(runs.map((r) => r.runId), ['untitled-2', 'dated', 'untitled-1']);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('listRuns keeps the in-progress run (no state.json yet) at the top', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'osq-runs-'));
+  try {
+    for (let i = 1; i <= 21; i++) {
+      const day = String(i).padStart(2, '0');
+      await makeRun(dir, `done-${day}`, { status: 'completed', startedAt: `2020-01-${day}T12:00:00Z` });
+    }
+    await makeRun(dir, 'untitled-1');
+
+    const runs = await listRuns(null, dir);
+    assert.equal(runs.length, 20);
+    assert.equal(runs[0].runId, 'untitled-1');
   } finally {
     await rm(dir, { recursive: true, force: true });
   }

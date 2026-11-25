@@ -241,13 +241,18 @@ Never rename while a subagent is running — only between steps.
 - lowercase, accents removed (`ã` → `a`, `ç` → `c`)
 - every run of characters that are not `a-z` or `0-9` becomes a single `-`
 - no leading or trailing `-`
-- at most 50 characters, cut at a `-` boundary (never mid-word)
+- at most 50 characters, cut at a `-` boundary (never mid-word); if the first word alone is longer than 50, cut it at 50
 - Examples: `Caso Curupira: a lenda!` → `caso-curupira-a-lenda`; `5 erros de IA no WhatsApp` → `5-erros-de-ia-no-whatsapp`
+- **Empty slug** (topic was only emoji, non-Latin script, or empty): try the user's original request instead; if that is also empty, keep `untitled-N` and skip the rename
 
 **Collision** — if `squads/{name}/output/{slug}/` already exists, use `{slug}-2`, then `{slug}-3`, etc. Never write into or overwrite another run's folder (e.g. `caso-curupira` exists → `caso-curupira-2`).
 
 **How**:
-1. `mv squads/{name}/output/{old_run_id} squads/{name}/output/{new_run_id}`
+1. Move with one guarded command — plain `mv` into an existing folder would nest one run inside another:
+   ```bash
+   cd squads/{name}/output && test ! -e "{new_run_id}" && mv "{old_run_id}" "{new_run_id}" && test -d "{new_run_id}" && echo RENAME:OK
+   ```
+   If it does not print `RENAME:OK`, the target exists: pick the next `-N` suffix and run it again.
 2. Update `run_id` in working memory — every later Output Path Transformation uses the new name, and paths from earlier steps now live under the new folder
 3. Tell the user in one line: `📁 Run folder: squads/{name}/output/{new_run_id}/`
 
@@ -548,6 +553,7 @@ This archives the run state for the `runs` command while keeping the squad root 
 - If a step file is missing, inform the user and suggest running `/opensquad edit {squad}` to fix.
 - If company.md is empty, stop and redirect to onboarding.
 - Never continue past a checkpoint without user input.
+- **Abort or failure** (the user chooses to abort, or a step cannot be completed): never delete the run folder. Write `squads/{name}/state.json` with `"status": "failed"` and `"failedAt"`: now, then run **Post-Completion Cleanup** — its step 1b names the run (Naming the Run, rule 3) before archiving `state.json` into it.
 
 ## Pipeline State
 

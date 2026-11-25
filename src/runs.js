@@ -1,4 +1,4 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const MAX_RUNS = 20;
@@ -19,6 +19,7 @@ export async function listRuns(squadName, targetDir = process.cwd()) {
   }
 
   const runs = [];
+  const sortTimes = new Map();
 
   for (const name of squadNames) {
     const outputDir = join(squadsDir, name, 'output');
@@ -48,25 +49,26 @@ export async function listRuns(squadName, targetDir = process.cwd()) {
         // No state.json or malformed — keep defaults
       }
 
+      sortTimes.set(run, await runSortTime(run.startedAt, join(outputDir, runId)));
       runs.push(run);
     }
   }
 
-  runs.sort(compareRuns);
+  runs.sort((a, b) => sortTimes.get(b) - sortTimes.get(a) || a.runId.localeCompare(b.runId));
   return runs.slice(0, MAX_RUNS);
 }
 
-// Newest startedAt first; runs without a valid startedAt go last, by name.
 // Run folders are named after their content, so the name says nothing about order.
-function compareRuns(a, b) {
-  const ta = Date.parse(a.startedAt);
-  const tb = Date.parse(b.startedAt);
-  const aValid = !Number.isNaN(ta);
-  const bValid = !Number.isNaN(tb);
-  if (aValid && bValid) return tb - ta;
-  if (aValid) return -1;
-  if (bValid) return 1;
-  return a.runId.localeCompare(b.runId);
+// Use state.json's startedAt; a run without it (in progress, aborted, legacy) falls
+// back to the folder's modification time so it is not pushed below older runs.
+async function runSortTime(startedAt, runDir) {
+  const t = Date.parse(startedAt);
+  if (!Number.isNaN(t)) return t;
+  try {
+    return (await stat(runDir)).mtimeMs;
+  } catch {
+    return 0;
+  }
 }
 
 export function formatDuration(ms) {
