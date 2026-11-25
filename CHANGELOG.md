@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+### Added
+- 13 ready-made Instagram agents in pt-BR (`agents/ig-*`), adapted from instagram-agent-skill (MIT, Jake Schincariol), with tasks and local Python tools adapted to Portuguese: hook score, beat sheet, humanizer/AI detector, caption linter, swipe file, profile rubric.
+- `init` installs bundled agents; `update` installs missing ones without overwriting edits. Installing an agent now copies its `tasks/` and `tools/`.
+- Design picks ready-made agents (`from_agent`) when they cover a role and match the squad language; Build copies them unchanged.
+- Per-profile Instagram memory at `_opensquad/_memory/instagram/{profile}/` (`voice.md`, `swipe.md`, `log.md`, `plan.md`); Discovery asks which profile an Instagram squad is for.
+- `npm test` also runs the Python tool tests.
+
 ### Changed
 - Run output folders are now named after the content (e.g. `output/caso-curupira/`) instead of a timestamp; runs start as `untitled-N` and are renamed once the topic is defined. `opensquad runs` now sorts by `startedAt`.
 

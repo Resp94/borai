@@ -100,6 +100,10 @@ O **Opensquad** vai te mostrar todas as opções disponíveis.
 
 Para criar um novo squad, basta selecionar a opção, e o **Arquiteto** faz algumas perguntas, projeta o squad e configura tudo automaticamente. Você aprova o design antes de qualquer execução.
 
+### Agentes de Instagram prontos
+
+O Opensquad vem com 13 agentes de Instagram em pt-BR, instalados em `agents/` no `init`: roteirista de Reels, carrossel e Stories, redator de legendas e de DMs, humanizador de texto, caçador de virais, planejador da semana, avaliador de perfil, auditor de resultados, comentarista, respondedor de comentários e garimpeiro de conteúdo. Ao criar um squad, o Arquiteto escolhe os que fazem sentido. As ferramentas deles (nota de gancho, ficha de tempo, humanizador, revisão de legenda) rodam localmente em Python, e cada perfil de Instagram tem sua própria memória em `_opensquad/_memory/instagram/{perfil}/`. Adaptados do [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
+
 ## Executando um Squad
 
 Você pode executar o squad novamente com /opensquad, ou pedindo diretamente:
@@ -249,6 +253,10 @@ Describe what you need:
 ```
 
 The **Architect** asks a few questions, designs the squad, and sets everything up automatically. You approve the design before any execution begins.
+
+### Ready-made Instagram agents
+
+Opensquad ships 13 Instagram agents (pt-BR), installed into `agents/` on `init`: Reels, carousel and Stories writers, caption and DM writers, a text humanizer, a viral-reels researcher, a weekly planner, a profile scorer, a results auditor, a commenter, a comment replier and a repurposer. When you create a squad, the Architect picks the ones that fit. Their tools (hook score, beat sheet, humanizer, caption linter) run locally in Python, and each Instagram profile gets its own memory at `_opensquad/_memory/instagram/{profile}/`. Adapted from [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
 
 ## Running a Squad
 
