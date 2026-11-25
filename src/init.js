@@ -6,6 +6,7 @@ import { createPrompt } from './prompt.js';
 import { loadLocale, t } from './i18n.js';
 import { listAvailable, installSkill } from './skills.js';
 import { installBundledAgents } from './agents.js';
+import { migrateLegacyProject, printMigration } from './migrate.js';
 import { logEvent } from './logger.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -40,6 +41,11 @@ const IDES = [
 ];
 
 export async function init(targetDir, options = {}) {
+
+  // Projects created with the old name are migrated first (see migrate.js).
+  const migration = await migrateLegacyProject(targetDir);
+  printMigration(migration);
+  if (migration.status === 'conflict') return;
 
   // Check if already initialized
   let isReInit = false;

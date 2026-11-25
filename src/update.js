@@ -6,6 +6,7 @@ import { getTemplateEntries, loadSavedLocale, copyCanonicalSources } from './ini
 import { listAvailable as listAvailableSkills, listInstalled as listInstalledSkills, installSkill, getSkillMeta } from './skills.js';
 import { installBundledAgents } from './agents.js';
 import { logEvent } from './logger.js';
+import { migrateLegacyProject, printMigration } from './migrate.js';
 
 async function loadSavedIdes(targetDir) {
   try {
@@ -50,6 +51,11 @@ async function backupIfExists(destPath) {
 
 export async function update(targetDir) {
   console.log('\n  🔄 Borai — Update\n');
+
+  // 0. Projects created with the old name are migrated first (see migrate.js).
+  const migration = await migrateLegacyProject(targetDir);
+  printMigration(migration);
+  if (migration.status === 'conflict') return { success: false };
 
   // 1. Check initialized
   try {
