@@ -1,4 +1,6 @@
-import { cp, readdir, readFile, rm, stat } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -76,7 +78,11 @@ export async function getSkillMeta(id) {
       }
     }
 
-    const result = { name, description, descriptions, type, env };
+    // optional: true → never installed automatically; init/update ask the user first
+    const optional = /^optional:\s*true\s*$/m.test(fm);
+    const size = fm.match(/^size:\s*["']?([^"'\n]+?)["']?\s*$/m)?.[1] || '';
+
+    const result = { name, description, descriptions, type, env, optional, size };
     metaCache.set(id, result);
     return result;
   } catch (err) {
@@ -136,6 +142,45 @@ export async function getSkillVersion(id, targetDir) {
     if (err.code === 'ENOENT') return null;
     throw err;
   }
+}
+
+// Skills with their own package.json (e.g. video-styles) need `npm install` inside their folder.
+export function installSkillDependencies(id, targetDir) {
+  validateSkillId(id);
+  const skillDir = join(targetDir, 'skills', id);
+  if (!existsSync(join(skillDir, 'package.json'))) return false;
+  execSync('npm install --no-audit --no-fund', { cwd: skillDir, stdio: 'inherit' });
+  return true;
+}
+
+// Optional skills the user said no to are remembered in preferences.md, so update does not ask again.
+const DECLINED_RE = /^- \*\*Declined Skills:\*\*\s*(.*)$/m;
+
+export async function readDeclinedSkills(targetDir) {
+  try {
+    const content = await readFile(join(targetDir, '_borai', '_memory', 'preferences.md'), 'utf-8');
+    const m = content.match(DECLINED_RE);
+    return m ? m[1].split(',').map((s) => s.trim()).filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function declinedSkillsLine(ids) {
+  return `- **Declined Skills:** ${ids.join(', ')}`;
+}
+
+export async function recordDeclinedSkills(targetDir, ids) {
+  const prefsPath = join(targetDir, '_borai', '_memory', 'preferences.md');
+  let content = '';
+  try { content = await readFile(prefsPath, 'utf-8'); } catch { /* no preferences yet */ }
+  const merged = [...new Set([...(await readDeclinedSkills(targetDir)), ...ids])];
+  const line = declinedSkillsLine(merged);
+  content = DECLINED_RE.test(content)
+    ? content.replace(DECLINED_RE, line)
+    : `${content.replace(/\n*$/, '\n')}${line}\n`;
+  await mkdir(dirname(prefsPath), { recursive: true });
+  await writeFile(prefsPath, content, 'utf-8');
 }
 
 export function getLocalizedDescription(meta, localeCode) {

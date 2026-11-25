@@ -18,6 +18,7 @@ npx github:Resp94/borai install <skill-name>
 | [image-fetcher](./image-fetcher/) | hybrid | Acquire visual assets via web search, live screenshots (Playwright), and user-provided files. | _(none)_ | `npx github:Resp94/borai install image-fetcher` |
 | [image-creator](./image-creator/) | mcp | Render HTML/CSS into production-ready PNG images via Playwright. | _(none)_ | `npx github:Resp94/borai install image-creator` |
 | [image-ai-generator](./image-ai-generator/) | script | Generate AI images via Openrouter API. Test mode (cheap) and production mode (high-quality). Supports reference images for brand consistency. | `OPENROUTER_API_KEY` | `npx github:Resp94/borai install image-ai-generator` |
+| [video-styles](./video-styles/) | script | 49 film styles made in code, a live gallery to pick one (`npx github:Resp94/borai galeria`) and the engines that render a silent 1080p video. Optional (~28 MB): init asks before installing. | _(none)_ | `npx github:Resp94/borai install video-styles` |
 
 ## Skill Types
 

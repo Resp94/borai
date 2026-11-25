@@ -1,7 +1,7 @@
 import { createInterface } from 'node:readline';
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
-import { listInstalled, installSkill, removeSkill, getSkillMeta, getLocalizedDescription } from './skills.js';
+import { listInstalled, installSkill, removeSkill, getSkillMeta, getLocalizedDescription, installSkillDependencies } from './skills.js';
 import { loadLocale, t, getLocaleCode } from './i18n.js';
 import { loadSavedLocale } from './init.js';
 import { logEvent } from './logger.js';
@@ -99,6 +99,7 @@ async function runInstall(id, targetDir) {
 
   console.log(`\n  ${t('skillsInstalling', { id })}`);
   await installSkill(id, targetDir);
+  installSkillDependencies(id, targetDir);
   console.log(`  ${t('skillsInstalled', { id })}\n`);
   await logEvent('skill:install', { name: id }, targetDir);
 }

@@ -1,0 +1,15 @@
+{
+  "name": "borai-video-styles",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Film styles made in code, their engines and a live gallery (Borai skill).",
+  "license": "MIT",
+  "dependencies": {
+    "playwright-core": "^1.58.2",
+    "three": "0.170.0"
+  },
+  "scripts": {
+    "setup-render": "node node_modules/playwright-core/cli.js install chromium-headless-shell"
+  }
+}

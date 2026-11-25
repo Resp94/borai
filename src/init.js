@@ -3,8 +3,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 import { createPrompt } from './prompt.js';
-import { loadLocale, t } from './i18n.js';
-import { listAvailable, installSkill } from './skills.js';
+import { loadLocale, t, getLocaleCode } from './i18n.js';
+import { listAvailable, installSkill, getSkillMeta, getLocalizedDescription, installSkillDependencies, declinedSkillsLine } from './skills.js';
 import { installBundledAgents } from './agents.js';
 import { migrateLegacyProject, printMigration, findLeftovers, printLeftovers } from './migrate.js';
 import { logEvent } from './logger.js';
@@ -65,6 +65,9 @@ export async function init(targetDir, options = {}) {
   let language = options._language || 'English';
   let ides = options._ides ?? ['claude-code'];
   let userName = '';
+  // Optional skills (heavy, e.g. video-styles) are only installed when the user says yes
+  const optionalSkills = await listOptionalSkills();
+  let chosenOptional = options._optionalSkills ?? [];
 
   if (!options._skipPrompts) {
     const prompt = createPrompt();
@@ -82,6 +85,15 @@ export async function init(targetDir, options = {}) {
       userName = (await prompt.ask(`  ${t('askName')}`)).trim();
 
       ides = await prompt.multiChoose(t('chooseIdes'), IDES);
+
+      chosenOptional = [];
+      for (const { id, meta } of optionalSkills) {
+        const answer = await prompt.choose(
+          t('askOptionalSkill', { name: id, size: meta.size || '?', description: getLocalizedDescription(meta, getLocaleCode()) }),
+          [{ label: t('optionalSkillYes'), value: true }, { label: t('optionalSkillNo', { name: id }), value: false }],
+        );
+        if (answer.value) chosenOptional.push(id);
+      }
     } finally {
       prompt.close();
     }
@@ -94,11 +106,16 @@ export async function init(targetDir, options = {}) {
   await copyCanonicalSources(targetDir);
   await copyIdeTemplates(ides, targetDir);
   await installAllSkills(targetDir);
+  for (const id of chosenOptional) {
+    await installSkill(id, targetDir);
+    console.log(`  ${t('createdFile', { path: `skills/${id}/SKILL.md` })}`);
+  }
   for (const id of await installBundledAgents(targetDir, { skipExisting: isReInit })) {
     console.log(`  ${t('createdFile', { path: `agents/${id}.agent.md` })}`);
   }
   if (!options._skipPrompts) {
     await installDependencies(targetDir);
+    for (const id of chosenOptional) installSkillDependencies(id, targetDir);
   }
   await writeProjectReadme(targetDir);
   if (migration.status === 'migrated') printLeftovers(await findLeftovers(targetDir));
@@ -113,7 +130,9 @@ export async function init(targetDir, options = {}) {
 - **IDEs:** ${ides.join(', ')}
 - **Date Format:** YYYY-MM-DD
 `;
-  await writeFile(prefsPath, prefsContent, 'utf-8');
+  const declined = optionalSkills.map(({ id }) => id).filter((id) => !chosenOptional.includes(id));
+  const prefsFull = declined.length ? `${prefsContent}${declinedSkillsLine(declined)}\n` : prefsContent;
+  await writeFile(prefsPath, prefsFull, 'utf-8');
 
   await logEvent('init', { language, ides: ides.join(',') }, targetDir);
 
@@ -165,9 +184,19 @@ export async function loadSavedLocale(targetDir) {
   await loadLocale('English');
 }
 
+async function listOptionalSkills() {
+  const result = [];
+  for (const id of await listAvailable()) {
+    const meta = await getSkillMeta(id);
+    if (meta?.optional) result.push({ id, meta });
+  }
+  return result;
+}
+
 async function installAllSkills(targetDir) {
   const available = await listAvailable();
   for (const id of available) {
+    if ((await getSkillMeta(id))?.optional) continue;
     await installSkill(id, targetDir);
     console.log(`  ${t('createdFile', { path: `skills/${id}/SKILL.md` })}`);
   }

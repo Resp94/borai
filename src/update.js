@@ -1,9 +1,10 @@
 import { cp, mkdir, readFile, stat } from 'node:fs/promises';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadLocale, t } from './i18n.js';
+import { loadLocale, t, getLocaleCode } from './i18n.js';
 import { getTemplateEntries, loadSavedLocale, copyCanonicalSources, mergeVsCodeSettings, mergeQwenSettings, mergeGeminiSettings } from './init.js';
-import { listAvailable as listAvailableSkills, listInstalled as listInstalledSkills, installSkill, getSkillMeta } from './skills.js';
+import { listAvailable as listAvailableSkills, listInstalled as listInstalledSkills, installSkill, getSkillMeta, getLocalizedDescription, installSkillDependencies, readDeclinedSkills, recordDeclinedSkills } from './skills.js';
+import { createPrompt } from './prompt.js';
 import { installBundledAgents } from './agents.js';
 import { logEvent } from './logger.js';
 import { migrateLegacyProject, printMigration, findLeftovers, printLeftovers } from './migrate.js';
@@ -55,7 +56,7 @@ async function backupIfExists(destPath) {
   }
 }
 
-export async function update(targetDir) {
+export async function update(targetDir, options = {}) {
   console.log('\n  🔄 Borai — Update\n');
 
   // 0. Projects created with the old name are migrated first (see migrate.js).
@@ -170,10 +171,14 @@ export async function update(targetDir) {
     const meta = await getSkillMeta(id);
     if (!meta) continue;
     if (meta.type === 'mcp' || meta.type === 'hybrid') continue;
+    if (meta.optional) continue;
     await installSkill(id, targetDir);
     console.log(`  ${t('createdFile', { path: `skills/${id}/SKILL.md` })}`);
     count++;
   }
+
+  // 6b'. Optional skills (heavy): ask once, only in an interactive terminal; a "no" is remembered
+  count += await offerOptionalSkills(targetDir, availableSkills, installedSkills, options);
 
   // 6c. Install bundled agents not already present (installed ones keep user edits)
   for (const id of await installBundledAgents(targetDir, { skipExisting: true })) {
@@ -194,4 +199,40 @@ export async function update(targetDir) {
   printLeftovers(leftovers);
 
   return { success: true, leftovers };
+}
+
+async function offerOptionalSkills(targetDir, available, installed, options) {
+  const interactive = options._optionalAnswers ? true : (process.stdin.isTTY && !options._skipPrompts);
+  if (!interactive) return 0;
+  const declined = await readDeclinedSkills(targetDir);
+  let count = 0;
+  for (const id of available) {
+    if (installed.includes(id) || declined.includes(id)) continue;
+    const meta = await getSkillMeta(id);
+    if (!meta?.optional) continue;
+    let yes;
+    if (options._optionalAnswers) {
+      yes = options._optionalAnswers[id] === true;
+    } else {
+      const prompt = createPrompt();
+      try {
+        const answer = await prompt.choose(
+          t('askOptionalSkill', { name: id, size: meta.size || '?', description: getLocalizedDescription(meta, getLocaleCode()) }),
+          [{ label: t('optionalSkillYes'), value: true }, { label: t('optionalSkillNo', { name: id }), value: false }],
+        );
+        yes = answer.value;
+      } finally {
+        prompt.close();
+      }
+    }
+    if (yes) {
+      await installSkill(id, targetDir);
+      console.log(`  ${t('createdFile', { path: `skills/${id}/SKILL.md` })}`);
+      if (!options._optionalAnswers) installSkillDependencies(id, targetDir);
+      count++;
+    } else {
+      await recordDeclinedSkills(targetDir, [id]);
+    }
+  }
+  return count;
 }

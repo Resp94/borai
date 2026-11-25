@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Borai · Galeria de estilos</title>
+<style>
+  :root {
+    --fundo: #0e0f12; --painel: #17191e; --linha: #262a31; --texto: #eceef2; --suave: #9aa1ad;
+    --destaque: #ffb347; --raio: 12px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(14,15,18,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linha); padding: 18px 28px 14px; }
+  .topo { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: -.01em; }
+  h1 b { color: var(--destaque); }
+  .contagem { color: var(--suave); font-size: 14px; }
+  .busca { margin-left: auto; }
+  .busca input { width: 280px; max-width: 70vw; padding: 9px 13px; border-radius: 999px; border: 1px solid var(--linha); background: var(--painel); color: var(--texto); font: inherit; }
+  .busca input:focus { outline: 2px solid var(--destaque); outline-offset: 1px; }
+  .filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { border: 1px solid var(--linha); background: transparent; color: var(--suave); padding: 5px 12px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip:hover { color: var(--texto); border-color: #3a3f48; }
+  .chip[aria-pressed="true"] { background: var(--destaque); border-color: var(--destaque); color: #1a1205; font-weight: 600; }
+  main { padding: 24px 28px 60px; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: var(--painel); border: 1px solid var(--linha); border-radius: var(--raio); overflow: hidden; cursor: pointer; text-align: left; padding: 0; color: inherit; font: inherit; transition: transform .15s, border-color .15s; }
+  .card:hover, .card:focus-visible { transform: translateY(-2px); border-color: var(--destaque); outline: none; }
+  .capa { position: relative; aspect-ratio: 16/9; background: #000; }
+  .capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .capa .play { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity .15s; background: rgba(0,0,0,.35); }
+  .card:hover .play, .card:focus-visible .play { opacity: 1; }
+  .play span { width: 54px; height: 54px; border-radius: 50%; background: var(--destaque); display: grid; place-items: center; color: #1a1205; font-size: 20px; padding-left: 4px; }
+  .corpo { padding: 12px 14px 14px; }
+  .nome { font-weight: 650; font-size: 16px; margin: 0 0 2px; }
+  .cat { color: var(--destaque); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .usos { color: var(--suave); font-size: 13px; margin-top: 6px; }
+  .vazio { color: var(--suave); padding: 40px 0; text-align: center; }
+
+  /* Player */
+  dialog { border: 0; padding: 0; background: transparent; color: var(--texto); max-width: 96vw; width: min(1240px, 96vw, calc((100vh - 230px) * 16 / 9)); }
+  dialog::backdrop { background: rgba(0,0,0,.82); }
+  .janela { background: var(--painel); border: 1px solid var(--linha); border-radius: var(--raio); overflow: hidden; }
+  .tela { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; overflow: hidden; }
+  .tela iframe { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .carregando { position: absolute; inset: 0; display: grid; place-items: center; color: var(--suave); }
+  .controles { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--linha); }
+  .controles button { background: var(--destaque); color: #1a1205; border: 0; border-radius: 8px; width: 38px; height: 32px; font-size: 15px; cursor: pointer; }
+  .controles input[type=range] { flex: 1; accent-color: var(--destaque); }
+  .tempo { font-variant-numeric: tabular-nums; color: var(--suave); font-size: 13px; min-width: 92px; text-align: right; }
+  .detalhe { padding: 14px 18px 18px; display: grid; grid-template-columns: 1fr auto; gap: 8px 20px; }
+  .detalhe h2 { margin: 0; font-size: 20px; }
+  .detalhe p { margin: 4px 0 0; color: var(--suave); grid-column: 1 / -1; }
+  .fechar { background: transparent; border: 1px solid var(--linha); color: var(--texto); border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; align-self: start; }
+  .fechar:hover { border-color: var(--destaque); }
+  .tags { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .tags span { font-size: 12px; border: 1px solid var(--linha); border-radius: 999px; padding: 3px 10px; color: var(--suave); }
+  footer { color: var(--suave); font-size: 12px; padding: 0 28px 30px; }
+  footer a { color: var(--suave); }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="topo">
+    <h1><b>Borai</b> · Galeria de estilos</h1>
+    <span class="contagem" id="contagem"></span>
+    <label class="busca"><input id="busca" type="search" placeholder="Buscar estilo ou uso…" aria-label="Buscar estilo"></label>
+  </div>
+  <div class="filtros" id="filtros"></div>
+</header>
+<main>
+  <div class="grade" id="grade"></div>
+  <div class="vazio" id="vazio" hidden>Nenhum estilo encontrado.</div>
+</main>
+<footer>
+  Os estilos tocam ao vivo: é o código do estilo desenhando cada quadro no seu navegador, sem vídeo.
+  Motores e código dos estilos: <a href="https://github.com/lemomo-ai/lemo-opuscar" target="_blank" rel="noopener">Lemo-Opuscar</a> por Lemomo (LemoLab), licença MIT.
+</footer>
+
+<dialog id="player" aria-label="Prévia do estilo">
+  <div class="janela">
+    <div class="tela" id="tela"><div class="carregando" id="carregando">Carregando estilo…</div></div>
+    <div class="controles">
+      <button id="btPlay" aria-label="Pausar">❚❚</button>
+      <input id="barra" type="range" min="0" max="1000" value="0" aria-label="Posição no tempo">
+      <span class="tempo" id="tempo">0:00 / 0:00</span>
+    </div>
+    <div class="detalhe">
+      <h2 id="pNome"></h2>
+      <button class="fechar" id="btFechar">Fechar (Esc)</button>
+      <p id="pDesc"></p>
+      <div class="tags" id="pTags"></div>
+    </div>
+  </div>
+</dialog>
+
+<script src="estilos.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const estilos = window.ESTILOS.map(([slug, nome, cat, desc, usos]) => ({ slug, nome, cat, desc, usos }));
+const categorias = ['Todos', ...[...new Set(estilos.map(e => e.cat))].sort((a, b) => a.localeCompare(b, 'pt'))];
+let filtro = 'Todos';
+
+function montarFiltros() {
+  $('filtros').innerHTML = '';
+  for (const c of categorias) {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = c; b.setAttribute('aria-pressed', c === filtro);
+    b.onclick = () => { filtro = c; montarFiltros(); montarGrade(); };
+    $('filtros').appendChild(b);
+  }
+}
+function normal(s) { return s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase(); }
+function montarGrade() {
+  const q = normal($('busca').value.trim());
+  const lista = estilos.filter(e => (filtro === 'Todos' || e.cat === filtro) &&
+    (!q || normal([e.nome, e.cat, e.desc, ...e.usos].join(' ')).includes(q)));
+  $('grade').innerHTML = '';
+  for (const e of lista) {
+    const c = document.createElement('button');
+    c.className = 'card'; c.setAttribute('aria-label', 'Ver prévia: ' + e.nome);
+    c.innerHTML = `<div class="capa"><img loading="lazy" src="capas/${e.slug}.jpg" alt=""><div class="play"><span>▶</span></div></div>
+      <div class="corpo"><div class="cat"></div><p class="nome"></p><div class="usos"></div></div>`;
+    c.querySelector('.cat').textContent = e.cat;
+    c.querySelector('.nome').textContent = e.nome;
+    c.querySelector('.usos').textContent = e.usos.join(' · ');
+    c.onclick = () => abrir(e);
+    $('grade').appendChild(c);
+  }
+  $('contagem').textContent = `${lista.length} de ${estilos.length} estilos`;
+  $('vazio').hidden = lista.length > 0;
+}
+$('busca').addEventListener('input', montarGrade);
+
+// Player ao vivo: contrato dos demos = window.READY, window.DUR, window.render(t)
+let frame = null, raf = 0, espera = 0, tocando = true, dur = 0, t = 0, ultimo = 0, arrastando = false;
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+function escalar() { if (frame) frame.style.transform = `scale(${$('tela').clientWidth / 1920})`; }
+addEventListener('resize', escalar);
+
+function abrir(e) {
+  fecharFrame();
+  $('pNome').textContent = e.nome; $('pDesc').textContent = e.desc;
+  $('pTags').innerHTML = ''; for (const u of [e.cat, ...e.usos]) { const s = document.createElement('span'); s.textContent = u; $('pTags').appendChild(s); }
+  $('carregando').hidden = false; $('carregando').textContent = 'Carregando estilo…';
+  $('player').showModal();
+  frame = document.createElement('iframe');
+  frame.src = `../styles/${e.slug}/demo/index.html`; frame.tabIndex = -1; frame.title = e.nome;
+  $('tela').appendChild(frame); escalar();
+  const inicio = performance.now();
+  espera = setInterval(() => {
+    const w = frame?.contentWindow;
+    if (performance.now() - inicio > 60000) { clearInterval(espera); $('carregando').textContent = 'Este estilo demorou demais para carregar.'; return; }
+    if (!w || w.READY !== true) return;
+    clearInterval(espera);
+    $('carregando').hidden = true;
+    dur = w.DUR || 30; t = 0; tocando = true; $('btPlay').textContent = '❚❚'; $('btPlay').setAttribute('aria-label', 'Pausar');
+    ultimo = performance.now(); raf = requestAnimationFrame(loop);
+  }, 100);
+}
+function loop(agora) {
+  const w = frame?.contentWindow; if (!w) return;
+  if (tocando && !arrastando) t = (t + (agora - ultimo) / 1000) % dur;
+  ultimo = agora;
+  try { w.render(t); } catch (err) { $('carregando').hidden = false; $('carregando').textContent = 'Erro neste estilo: ' + err.message; return; }
+  if (!arrastando) $('barra').value = Math.round(t / dur * 1000);
+  $('tempo').textContent = `${fmt(t)} / ${fmt(dur)}`;
+  raf = requestAnimationFrame(loop);
+}
+function fecharFrame() { cancelAnimationFrame(raf); clearInterval(espera); if (frame) { frame.src = 'about:blank'; frame.remove(); frame = null; } }
+$('btPlay').onclick = () => { tocando = !tocando; $('btPlay').textContent = tocando ? '❚❚' : '▶'; $('btPlay').setAttribute('aria-label', tocando ? 'Pausar' : 'Tocar'); };
+$('barra').addEventListener('input', () => { arrastando = true; t = $('barra').value / 1000 * dur; });
+$('barra').addEventListener('change', () => { arrastando = false; });
+$('btFechar').onclick = () => $('player').close();
+$('player').addEventListener('close', fecharFrame);
+$('player').addEventListener('click', ev => { if (ev.target === $('player')) $('player').close(); });
+document.addEventListener('keydown', ev => { if ($('player').open && ev.code === 'Space' && ev.target.tagName !== 'INPUT') { ev.preventDefault(); $('btPlay').click(); } });
+
+montarFiltros(); montarGrade();
+</script>
+</body>
+</html>

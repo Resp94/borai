@@ -74,5 +74,9 @@
   "step2GeminiCli": "2. Escribe /borai para comenzar",
   "step1Trae": "1. Abre este proyecto en Trae",
   "step2Trae": "2. Escribe /borai en el chat para comenzar",
-  "tokenCostWarning": "Ejecutar squads consume tokens de IA (de pago). Monitorea tu consumo en tu IDE o en el dashboard de tu proveedor de IA."
+  "tokenCostWarning": "Ejecutar squads consume tokens de IA (de pago). Monitorea tu consumo en tu IDE o en el dashboard de tu proveedor de IA.",
+  "askOptionalSkill": "¿Instalar la skill opcional \"{name}\" ({size})? {description}",
+  "optionalSkillYes": "Sí, instalar",
+  "optionalSkillNo": "No, ahora no (puedes instalarla luego con: npx github:Resp94/borai install {name})",
+  "galleryNotInstalled": "La skill video-styles no está instalada. Instálala con: npx github:Resp94/borai install video-styles"
 }
