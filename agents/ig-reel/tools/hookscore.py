@@ -1,33 +1,28 @@
 #!/usr/bin/env python3
 """
-hookscore.py - score the first line of a Reel on the five things strong hooks
-have in common, and rank a batch of them against each other.
+hookscore.py - dá nota à primeira frase de um Reel nas cinco coisas que bons
+ganchos têm em comum, e ranqueia vários ganchos entre si. Versão pt-BR.
 
-What this is:  five local heuristics, computed on your machine from the text
-alone. They measure properties that hooks which hold attention tend to share -
-a length you can say in under three seconds, a concrete marker, something at stake,
-the payload at the front rather than the back, and a viewer to aim it at.
+O que é: cinco heurísticas locais, calculadas só com o texto. Medem o que
+ganchos que seguram atenção costumam ter - dá para falar em menos de três
+segundos, tem algo concreto, tem algo em jogo, a parte interessante vem na
+frente e fala com alguém.
 
-What this is NOT:  a view predictor. It was tested against 74 real short-form
-hooks, transcribed from the first three seconds of the top eight and bottom
-eight performers on five channels. Separating a real hook from a deliberately
-bad one it does well: AUC 0.83, and 9 of 10 written-to-be-bad hooks scored
-below the real median. Separating a good creator's hits from that same
-creator's misses it barely does at all: AUC 0.56, where 0.50 is a coin flip.
+O que NÃO é: previsor de views. No original (em inglês) separou bem gancho
+real de gancho ruim de propósito (AUC 0,83), mas quase não separa os acertos
+dos erros de um mesmo criador (AUC 0,56). Use para pegar saudação, enrolação,
+gancho sem nada concreto e gancho longo demais. O gráfico de retenção vale
+mais que este script.
 
-So use it for what it measured well. It catches greetings, preambles, hooks
-with nothing concrete in them and hooks that take five seconds to say. It will
-not tell you which of two decent hooks will travel, and nothing that reads text
-can, because that is decided by your face, your edit, your audio and who
-Instagram shows it to. Trust the retention graph over this script.
+Cada checagem vai de 0 a 100. Quanto maior, melhor.
 
-Each check returns 0 to 100. Higher is better.
+Adaptado do instagram-agent-skill (MIT, Jake Schincariol) para pt-BR.
 
-Usage
-  python3 hookscore.py hooks.txt              # one hook per line, ranked
-  python3 hookscore.py --hook "I lost $18,000 on one missing contract."
-  pbpaste | python3 hookscore.py -
-  python3 hookscore.py hooks.txt --json
+Uso
+  python3 hookscore.py ganchos.txt            # um gancho por linha, ranqueados
+  python3 hookscore.py --hook "Perdi R$ 18 mil por causa de uma cláusula."
+  python3 hookscore.py - < ganchos.txt
+  python3 hookscore.py ganchos.txt --json
 """
 
 import argparse
@@ -36,76 +31,81 @@ import re
 import statistics
 import sys
 
-WORD_RE = re.compile(r"[A-Za-z0-9$%'’-]+")
+# Palavras com acento contam; "R$18.000" é uma palavra só (ver words()).
+WORD_RE = re.compile(r"R\$\d[\d.]*(?:,\d+)?|[^\W_]+(?:[-'’%][^\W_]*)*", re.UNICODE)
 NUMBER_RE = re.compile(
-    r"\$\s?\d[\d,]*(?:\.\d+)?"                       # money, whole
-    r"|\b\d[\d,]*(?:\.\d+)?\s?"                      # a figure, with or
-    r"(?:%|k\b|x\b|hrs?\b|hours?\b|mins?\b|minutes?\b"  # without a unit
-    r"|days?\b|weeks?\b|months?\b|years?\b)?",
+    r"R\$\s?\d[\d.]*(?:,\d+)?(?:\s?(?:mil|mi|milhão|milhões|bi))?"   # dinheiro
+    r"|\b\d[\d.]*(?:,\d+)?\s?"                                          # número, com
+    r"(?:%|mil\b|mi\b|k\b|x\b|h\b|horas?\b|min\b|minutos?\b"            # ou sem unidade
+    r"|dias?\b|semanas?\b|mês\b|meses\b|anos?\b)?",
     re.IGNORECASE)
-PROPER_RE = re.compile(r"(?<!^)\b[A-Z][a-z]{2,}\b")
+PROPER_RE = re.compile(r"(?<!^)\b[A-ZÀ-Þ][a-zà-ÿ]{2,}\b")
 HASHTAG_RE = re.compile(r"(?:^|\s)#\w+")
 EMOJI_RE = re.compile(r"[\U0001F300-\U0001FAFF☀-➿]")
 
-# Spoken hooks say their numbers out loud. "Zero dollars" and "twenty grand"
-# are as concrete as "$0" and "$20,000", and counting only digits missed them.
-# "one" and "first" are deliberately absent: they are filler far more often
-# than they are a quantity.
+# Ganchos falados dizem os números por extenso. "um" e "primeiro" ficam de
+# fora de propósito: quase sempre são enchimento, não quantidade.
 SPOKEN_NUMBERS = {
-    "zero", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    "ten", "eleven", "twelve", "fifteen", "twenty", "thirty", "forty", "fifty",
-    "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million",
-    "billion", "dozen", "half", "twice", "triple",
+    "zero", "dois", "duas", "três", "tres", "quatro", "cinco", "seis", "sete",
+    "oito", "nove", "dez", "onze", "doze", "quinze", "vinte", "trinta",
+    "quarenta", "cinquenta", "sessenta", "setenta", "oitenta", "noventa", "cem",
+    "cento", "duzentos", "trezentos", "quinhentos", "mil", "milhão", "milhões",
+    "bilhão", "dúzia", "metade", "dobro", "triplo",
 }
 MONEY_WORDS = {
-    "dollars", "dollar", "bucks", "grand", "percent", "cents",
-    "millionaire", "billionaire", "revenue", "profit", "salary", "rent",
+    "reais", "real", "conto", "contos", "pila", "pilas", "grana", "porcento",
+    "centavos", "milionário", "milionária", "faturamento", "lucro", "salário",
+    "aluguel", "prejuízo", "boleto",
 }
 
-# Words that put something on the line. A hook with none of these is a
-# statement; a hook with one is a reason to keep watching.
+# Palavras que põem algo em jogo. Gancho sem nenhuma é afirmação; com uma,
+# é motivo para continuar assistindo.
 STAKES = {
-    "stop", "never", "wrong", "mistake", "mistakes", "lost", "lose", "losing",
-    "cost", "costs", "broke", "broken", "failed", "failure", "fail", "nobody",
-    "no", "not", "don't", "dont", "doesn't", "didn't", "can't", "won't",
-    "quit", "quitting", "fired", "deleted", "delete", "killed", "kills", "kill",
-    "replaced", "replaces", "cut", "beat", "free", "paid", "charged", "hired",
-    "saved", "first",
-    "banned", "illegal", "worst", "hate", "hated", "wasted", "waste", "scam",
-    "lie", "lied", "lying", "truth", "secret", "hidden", "stole", "stolen",
-    "before", "until", "instead", "but", "except", "unless", "problem",
-    "risk", "danger", "warning", "regret", "wish", "should", "shouldn't",
-    "still", "already", "only", "without", "versus", "vs", "actually",
+    "pare", "nunca", "errado", "errada", "erro", "erros", "perdi",
+    "perde", "perder", "perdendo", "custou", "custa", "custo", "quebrei",
+    "quebrou", "falhei", "falhou", "fracasso", "ninguém", "não", "nao", "nem",
+    "larguei", "demitido", "demitida", "apaguei", "apague", "matou", "mata",
+    "substituiu", "substitui", "cortei", "corta", "venci", "grátis", "gratis",
+    "paguei", "cobrei", "cobrou", "contratei", "economizei", "primeiro",
+    "proibido", "ilegal", "pior", "odeio", "odiei", "desperdicei", "golpe",
+    "mentira", "menti", "verdade", "segredo", "escondido", "roubou", "roubaram",
+    "antes", "até", "em vez", "mas", "exceto", "problema", "risco", "perigo",
+    "cuidado", "arrependo", "arrependimento", "deveria", "ainda", "já", "só",
+    "sem", "contra", "versus", "vs", "na real", "caro",
 }
 
-# Openers that spend the first second saying nothing.
+# Aberturas que gastam o primeiro segundo sem dizer nada.
 WEAK_OPENERS = [
-    "so", "ok", "okay", "hey", "hi", "hello", "guys", "yo", "alright",
-    "welcome", "today", "basically", "honestly", "look", "listen", "um",
-    "just", "let", "lets", "let's", "i wanted", "i want", "one of",
-    "have you", "did you", "do you", "are you", "in this", "in today",
-    "the thing", "a lot", "there is", "there are", "this is", "it is",
-    "as a", "when it", "if you've", "you know",
+    "então", "entao", "bom", "ok", "oi", "olá", "ola", "gente", "galera",
+    "pessoal", "fala", "e aí", "e ai", "salve", "bem-vindo", "bem-vindos",
+    "bem vindos", "hoje", "basicamente", "sinceramente", "olha só", "escuta",
+    "tipo", "é", "hã", "só", "deixa eu", "deixa", "vamos", "bora", "eu queria",
+    "eu quero", "um dos", "uma das", "você já", "você sabia", "vocês já",
+    "neste", "nesse", "no vídeo", "a coisa", "muita gente", "existe", "existem",
+    "tem gente", "isso é", "esse é", "essa é", "como um", "como uma",
+    "quando se", "você sabe",
 ]
 
-# Imperatives that earn the front position.
+# Ordens que merecem a primeira posição.
 IMPERATIVES = {
-    "stop", "steal", "copy", "delete", "try", "watch", "read", "save",
-    "use", "build", "make", "write", "send", "take", "start", "quit",
-    "never", "always", "don't", "dont", "do", "put", "run", "check",
+    "para", "pare", "rouba", "roube", "copia", "copie", "apaga", "apague",
+    "testa", "teste", "olha", "olhe", "assiste", "assista", "lê", "leia",
+    "salva", "salve", "usa", "use", "monta", "faz", "faça", "escreve",
+    "escreva", "manda", "mande", "pega", "pegue", "começa", "comece", "larga",
+    "nunca", "sempre", "não", "coloca", "coloque", "confere", "confira",
 }
 
 DEALBREAKERS = [
-    (re.compile(r"(?i)^\s*(?:stop scrolling|don'?t scroll)"),
-     "Opens with \"stop scrolling\". Asking for attention proves you have not earned it."),
-    (re.compile(r"(?i)\b(?:in (?:this|today'?s) (?:video|reel)|i'?m going to show you|i'?ll show you how)\b"),
-     "Video preamble. Delete it and open on the payoff."),
-    (re.compile(r"(?i)^\s*(?:hey |hi |what'?s up |welcome )"),
-     "Greeting. Nobody came to the feed to be greeted."),
+    (re.compile(r"(?i)^\s*(?:para de rolar|pare de rolar|não rola|nao rola|não passa|espera,? não)"),
+     "Abre com \"para de rolar\". Pedir atenção prova que você não a conquistou."),
+    (re.compile(r"(?i)\b(?:(?:neste|nesse|no) (?:vídeo|video|reel)(?: de hoje)?|hoje eu vou te (?:mostrar|ensinar)|(?:eu )?vou te (?:mostrar|ensinar)|você vai aprender)\b"),
+     "Enrolação de vídeo. Apague e abra direto na recompensa."),
+    (re.compile(r"(?i)^\s*(?:oi|olá|ola|e aí|e ai|fala|salve|bem[- ]vindos?)\b[ ,!]*(?:gente|galera|pessoal|turma)?"),
+     "Saudação. Ninguém veio ao feed para ser cumprimentado."),
     (HASHTAG_RE,
-     "Hashtag in the hook. Hashtags belong at the bottom of the caption, if anywhere."),
+     "Hashtag no gancho. Hashtag vai no fim da legenda, se for."),
     (EMOJI_RE,
-     "Emoji in the hook. On-screen text at hook size has room for words or for an emoji, not both."),
+     "Emoji no gancho. Texto de tela no tamanho de gancho tem espaço para palavras ou para emoji, não os dois."),
 ]
 
 
@@ -114,15 +114,15 @@ def clamp(n):
 
 
 def words(text):
-    # "$18,000" is one word when it is spoken, so it is one word here too.
-    return WORD_RE.findall(re.sub(r"(?<=\d),(?=\d)", "", text))
+    # "R$ 18.000" é uma palavra quando falado, então é uma palavra aqui também.
+    return WORD_RE.findall(re.sub(r"R\$\s+(?=\d)", "R$", text))
 
 
 def check_length(text):
-    """A hook has to land before the thumb moves. Roughly two seconds."""
+    """O gancho tem que chegar antes do dedão mexer. Uns dois segundos."""
     w = words(text)
     n = len(w)
-    secs = n / 2.75                      # ~165 words per minute, spoken
+    secs = n / 2.5                       # ~150 palavras por minuto, falado
     chars = len(text.strip())
     if 5 <= n <= 12:
         score = 100.0
@@ -130,13 +130,13 @@ def check_length(text):
         score = clamp(100 - (5 - n) * 20)
     else:
         score = clamp(100 - (n - 12) * 11)
-    if chars > 60:                       # two lines of big on-screen text
+    if chars > 60:                       # duas linhas de texto grande na tela
         score -= 12
-    return clamp(score), f"{n} words, {chars} chars, ~{secs:.1f}s spoken (want 5-12 words)"
+    return clamp(score), f"{n} palavras, {chars} caracteres, ~{secs:.1f}s falado (bom: 5-12 palavras)"
 
 
 def check_specificity(text):
-    """One concrete thing beats three abstract ones."""
+    """Uma coisa concreta vale mais que três abstratas."""
     nums = [n.strip() for n in NUMBER_RE.findall(text) if n.strip()]
     propers = set(PROPER_RE.findall(text))
     low = [w.lower().strip("'’") for w in words(text)]
@@ -144,29 +144,31 @@ def check_specificity(text):
     hits = len(nums) + len(propers) + len(spoken)
     score = 15.0 if hits == 0 else clamp(45 + hits * 30)
     found = ", ".join(nums[:2] + sorted(propers)[:2] + spoken[:2])
-    return score, (f"{hits} concrete marker(s)" + (f": {found}" if found else
-                   " - no number, no name, nothing checkable"))
+    return score, (f"{hits} marca(s) concreta(s)" + (f": {found}" if found else
+                   " - sem número, sem nome, nada verificável"))
 
 
 def check_stakes(text):
-    """Tension, cost, negation. Something the viewer might lose."""
+    """Tensão, custo, negação. Algo que a pessoa pode perder."""
     w = [x.lower().strip("'’") for x in words(text)]
     hits = [x for x in w if x in STAKES]
+    low = text.lower()
+    hits += [p for p in ("em vez", "na real") if p in low]
     markers = sorted(set(hits))
-    if re.search(r"\$\s?\d", text):
-        markers.append("a price")
+    if re.search(r"R\$\s?\d", text) or any(x in MONEY_WORDS for x in w):
+        markers.append("um preço")
     n = len(markers)
     score = {0: 20.0, 1: 70.0}.get(n, 100.0)
-    detail = f"{n} tension marker(s)" + (f": {', '.join(markers[:4])}" if markers else
-                                         " - nothing is at stake in this line")
+    detail = f"{n} marca(s) de tensão" + (f": {', '.join(markers[:4])}" if markers else
+                                          " - nada está em jogo nesta frase")
     return clamp(score), detail
 
 
 def check_frontload(text):
-    """The interesting word cannot be in position nine."""
+    """A palavra interessante não pode estar na nona posição."""
     w = words(text)
     if not w:
-        return 0.0, "empty"
+        return 0.0, "vazio"
     low = [x.lower().strip("'’") for x in w]
     opener = " ".join(low[:2])
     penalty = 0
@@ -183,52 +185,53 @@ def check_frontload(text):
             break
     if payload is None:
         base = 30.0
-        where = "no payload word anywhere in the line"
+        where = "nenhuma palavra de impacto na frase"
     elif payload <= 3:
         base = 100.0
-        where = f"payload at word {payload + 1}"
+        where = f"impacto na palavra {payload + 1}"
     elif payload <= 6:
         base = 70.0
-        where = f"payload at word {payload + 1}, could move forward"
+        where = f"impacto na palavra {payload + 1}, dá para trazer para frente"
     else:
         base = 40.0
-        where = f"payload at word {payload + 1}, too late"
-    detail = where + (f"; weak opener \"{hit_opener}\"" if hit_opener else "")
+        where = f"impacto na palavra {payload + 1}, tarde demais"
+    detail = where + (f"; abertura fraca \"{hit_opener}\"" if hit_opener else "")
     return clamp(base - penalty), detail
 
 
 def check_address(text):
-    """Aimed at one viewer, or floating in the air."""
+    """Mirado em uma pessoa, ou solto no ar."""
     low = text.lower()
     w = [x.lower().strip("'’") for x in words(text)]
-    if re.search(r"\b(you|your|you're|youre|yourself)\b", low):
-        return 100.0, "speaks to the viewer"
+    if re.search(r"\b(você|voce|vc|vocês|voces|te|teu|tua|seu|sua|seus|suas)\b", low):
+        return 100.0, "fala com quem assiste"
     if w and w[0] in IMPERATIVES:
-        return 90.0, f"imperative opener (\"{w[0]}\")"
-    if re.search(r"\b(i|my|me|we|our)\b", low):
-        return 70.0, "first person, no viewer named"
-    return 35.0, "third person, nobody in the room"
+        return 90.0, f"abre com uma ordem (\"{w[0]}\")"
+    if re.search(r"\b(eu|meu|minha|meus|minhas|me|mim|nós|nosso|nossa|a gente)\b", low) or \
+            re.search(r"^\s*\w+(?:ei|i)\b", low):
+        return 70.0, "primeira pessoa, sem falar com ninguém"
+    return 35.0, "terceira pessoa, ninguém na sala"
 
 
-CHECKS = ["LENGTH", "SPECIFICITY", "STAKES", "FRONTLOAD", "ADDRESS"]
+CHECKS = ["COMPRIMENTO", "CONCRETUDE", "TENSÃO", "POSIÇÃO", "DESTINATÁRIO"]
 
 
 def run(text):
     results = {
-        "LENGTH": check_length(text),
-        "SPECIFICITY": check_specificity(text),
-        "STAKES": check_stakes(text),
-        "FRONTLOAD": check_frontload(text),
-        "ADDRESS": check_address(text),
+        "COMPRIMENTO": check_length(text),
+        "CONCRETUDE": check_specificity(text),
+        "TENSÃO": check_stakes(text),
+        "POSIÇÃO": check_frontload(text),
+        "DESTINATÁRIO": check_address(text),
     }
     flags = [msg for pattern, msg in DEALBREAKERS if pattern.search(text)]
     scores = [results[c][0] for c in CHECKS]
-    # The weakest property caps the hook, same logic as detect.py: one bad
-    # property is enough for the thumb to keep moving.
+    # O critério mais fraco limita o gancho, mesma lógica do detect.py: um
+    # ponto ruim basta para o dedão continuar rolando.
     overall = statistics.mean(scores) * 0.6 + min(scores) * 0.4 - len(flags) * 15
     overall = clamp(overall)
-    verdict = "STRONG" if overall >= 70 and min(scores) >= 55 and not flags else (
-        "OK" if overall >= 50 else "WEAK")
+    verdict = "FORTE" if overall >= 70 and min(scores) >= 55 and not flags else (
+        "OK" if overall >= 50 else "FRACO")
     return results, overall, verdict, flags
 
 
@@ -238,7 +241,7 @@ def bar(score, width=24):
 
 
 def render_one(text, results, overall, verdict, flags, out=sys.stdout):
-    print("\nHOOK SCORE", file=out)
+    print("\nNOTA DO GANCHO", file=out)
     print("=" * 62, file=out)
     print(f"  \"{text.strip()}\"\n", file=out)
     for name in CHECKS:
@@ -246,32 +249,32 @@ def render_one(text, results, overall, verdict, flags, out=sys.stdout):
         print(f"  {name:<13} {bar(score)} {score:5.1f}", file=out)
         print(f"  {'':<13} {detail}", file=out)
     print("-" * 62, file=out)
-    print(f"  {'HOOK SCORE':<13} {bar(overall)} {overall:5.1f}   {verdict}", file=out)
+    print(f"  {'NOTA DO GANCHO':<13} {bar(overall)} {overall:5.1f}   {verdict}", file=out)
     for f in flags:
-        print(f"\n  DEALBREAKER  {f}", file=out)
-    if verdict != "STRONG":
+        print(f"\n  ELIMINATÓRIO  {f}", file=out)
+    if verdict != "FORTE":
         weakest = min(CHECKS, key=lambda c: results[c][0])
-        print(f"\n  Weakest property: {weakest}. Fix that one and re-run.", file=out)
+        print(f"\n  Ponto mais fraco: {weakest}. Corrija esse e rode de novo.", file=out)
     print("", file=out)
 
 
 def render_table(rows, out=sys.stdout):
-    print("\nHOOK RANKING\n" + "=" * 78, file=out)
+    print("\nRANKING DE GANCHOS\n" + "=" * 78, file=out)
     for i, r in enumerate(rows, 1):
         mark = "->" if i == 1 else "  "
         hook = r["hook"] if len(r["hook"]) <= 62 else r["hook"][:59] + "..."
         print(f"{mark} {r['score']:5.1f} {r['verdict']:<7} {hook}", file=out)
-        print(f"        weakest: {r['weakest']} ({r['checks'][r['weakest']]['score']:.0f})", file=out)
+        print(f"        mais fraco: {r['weakest']} ({r['checks'][r['weakest']]['score']:.0f})", file=out)
         for f in r["flags"]:
-            print(f"        dealbreaker: {f}", file=out)
-    print("\nShoot the top one. If the top one is under 50, none of these are the hook.\n",
+            print(f"        eliminatório: {f}", file=out)
+    print("\nGrave o primeiro. Se o primeiro está abaixo de 50, nenhum destes é o gancho.\n",
           file=out)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Score a Reel hook on five properties.")
-    ap.add_argument("input", nargs="?", default="-", help="file with one hook per line, or -")
-    ap.add_argument("--hook", help="score a single hook given on the command line")
+    ap = argparse.ArgumentParser(description="Dá nota a ganchos de Reel em pt-BR, em cinco critérios.")
+    ap.add_argument("input", nargs="?", default="-", help="arquivo com um gancho por linha, ou -")
+    ap.add_argument("--hook", help="dá nota a um único gancho passado na linha de comando")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args()
 
@@ -281,7 +284,7 @@ def main():
         raw = sys.stdin.read() if args.input == "-" else open(args.input, encoding="utf-8").read()
         lines = [l.strip() for l in raw.splitlines() if l.strip()]
     if not lines:
-        print("nothing to score", file=sys.stderr)
+        print("nada para avaliar", file=sys.stderr)
         sys.exit(2)
 
     payload = []
