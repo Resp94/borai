@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [Unreleased]
 
+### Changed
+- Run output folders are now named after the content (e.g. `output/caso-curupira/`) instead of a timestamp; runs start as `untitled-N` and are renamed once the topic is defined. `opensquad runs` now sorts by `startedAt`.
+
 ## [0.1.15] - 2026-04-10
 
 ### Added

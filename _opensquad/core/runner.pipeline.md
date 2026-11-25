@@ -70,12 +70,11 @@ Before starting execution:
    🤖 Agents: {list agent names with icons}
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ```
-5b. **Initialize run folder**: Generate a unique run ID for this execution:
-   - Format: `YYYY-MM-DD-HHmmss` using the current timestamp (e.g. `2026-03-03-143022`)
-   - Check if `squads/{name}/output/{run_id}/` already exists
-     - If it does (sub-second collision), append `-2`, `-3`, etc. until the folder does not exist
+5b. **Initialize run folder**: Run folders are named after the content they hold (e.g. `caso-curupira`), never after a date or time. The topic is usually not known yet, so start with a placeholder:
+   - `run_id` = `untitled-N`, where N is the smallest positive integer for which `squads/{name}/output/untitled-N/` does not exist (check with `ls`)
    - Create the folder using Bash: `mkdir -p squads/{name}/output/{run_id}`
    - Store `run_id` in working memory for this run — it will be used for ALL output paths
+   - The folder is renamed to the content's name as soon as the topic is defined — see **Naming the Run**
 6. **Initialize state.json**: Create `squads/{name}/state.json` from scratch (see below). State writes are always mandatory.
    - **IMPORTANT**: You MUST write to `squads/{name}/state.json` before every step and after every handoff. This is non-negotiable. Never skip these writes.
    - Create `state.json` from scratch:
@@ -197,8 +196,8 @@ Before saving any output file in a step, apply these rules to determine the fina
 #### Step 1 — Insert run_id
 
 - If the path starts with `squads/{name}/output/`, insert `{run_id}/` immediately after `output/`
-  - Example: `squads/carousel/output/slides/draft.md` → `squads/carousel/output/2026-03-03-143022/slides/draft.md`
-  - Example: `squads/carousel/output/angles-brief.yaml` → `squads/carousel/output/2026-03-03-143022/angles-brief.yaml`
+  - Example: `squads/carousel/output/slides/draft.md` → `squads/carousel/output/caso-curupira/slides/draft.md`
+  - Example: `squads/carousel/output/angles-brief.yaml` → `squads/carousel/output/caso-curupira/angles-brief.yaml`
 - If the path does NOT start with `squads/{name}/output/`, leave it unchanged
 
 #### Step 2 — Insert version folder
@@ -206,8 +205,8 @@ Before saving any output file in a step, apply these rules to determine the fina
 Apply to every path that was transformed in Step 1:
 
 1. Determine the **output group** = the parent directory of the file (after Step 1 transformation)
-   - Example: `squads/carousel/output/2026-03-03-143022/slides/draft.md` → group is `squads/carousel/output/2026-03-03-143022/slides/`
-   - Example: `squads/carousel/output/2026-03-03-143022/angles-brief.yaml` → group is `squads/carousel/output/2026-03-03-143022/`
+   - Example: `squads/carousel/output/caso-curupira/slides/draft.md` → group is `squads/carousel/output/caso-curupira/slides/`
+   - Example: `squads/carousel/output/caso-curupira/angles-brief.yaml` → group is `squads/carousel/output/caso-curupira/`
 
 2. Detect existing versions for this group using Bash:
    ```bash
@@ -219,13 +218,38 @@ Apply to every path that was transformed in Step 1:
    (`{relative-group}` is the portion of the group path after `squads/{name}/output/{run_id}/`, e.g. `slides/` or empty string for root-level files)
 
 3. Insert the version folder immediately before the filename:
-   - `squads/carousel/output/2026-03-03-143022/slides/draft.md` → `squads/carousel/output/2026-03-03-143022/slides/v1/draft.md`
-   - `squads/carousel/output/2026-03-03-143022/angles-brief.yaml` → `squads/carousel/output/2026-03-03-143022/v1/angles-brief.yaml`
+   - `squads/carousel/output/caso-curupira/slides/draft.md` → `squads/carousel/output/caso-curupira/slides/v1/draft.md`
+   - `squads/carousel/output/caso-curupira/angles-brief.yaml` → `squads/carousel/output/caso-curupira/v1/angles-brief.yaml`
 
 4. **Cache per group**: within a single step execution, once a version is determined for a group, reuse it for all subsequent files in that same group. Do not re-run the `ls` per file.
    If the same file path is written twice within a step, both writes go to the same versioned path (the second write overwrites the first within that version).
 
 Apply this transformation consistently for every write in this step.
+
+### Naming the Run
+
+The run folder starts as `untitled-N` (initialization step 5b) and is renamed **once** to a slug of the content's topic. Skip this section if `run_id` no longer starts with `untitled-`.
+
+**When** — the first of these moments that applies:
+1. Right after the first checkpoint whose user response defines the topic (e.g. the user picks an angle, a theme or a news item)
+2. If no checkpoint defines it: right after the first step whose output defines the topic
+3. Otherwise: before closing the run (completion, failure or abort), using the user's original request as the topic
+
+Never rename while a subagent is running — only between steps.
+
+**Slug** — derived from the topic:
+- lowercase, accents removed (`ã` → `a`, `ç` → `c`)
+- every run of characters that are not `a-z` or `0-9` becomes a single `-`
+- no leading or trailing `-`
+- at most 50 characters, cut at a `-` boundary (never mid-word)
+- Examples: `Caso Curupira: a lenda!` → `caso-curupira-a-lenda`; `5 erros de IA no WhatsApp` → `5-erros-de-ia-no-whatsapp`
+
+**Collision** — if `squads/{name}/output/{slug}/` already exists, use `{slug}-2`, then `{slug}-3`, etc. Never write into or overwrite another run's folder (e.g. `caso-curupira` exists → `caso-curupira-2`).
+
+**How**:
+1. `mv squads/{name}/output/{old_run_id} squads/{name}/output/{new_run_id}`
+2. Update `run_id` in working memory — every later Output Path Transformation uses the new name, and paths from earlier steps now live under the new folder
+3. Tell the user in one line: `📁 Run folder: squads/{name}/output/{new_run_id}/`
 
 ### For each pipeline step:
 
@@ -291,7 +315,7 @@ Apply this transformation consistently for every write in this step.
   - The veto conditions from the step file (agent should self-check before completing)
   - The company context
   - The squad memory
-  - The **transformed** path to save output (e.g., `squads/{name}/output/2026-03-20-140736/slides/v1/draft.md`)
+  - The **transformed** path to save output (e.g., `squads/{name}/output/caso-curupira/slides/v1/draft.md`)
 - Wait for the subagent to complete
 - Inform user: `✓ {Agent Name} completed`
 - Proceed to Post-Step Output Validation (below) before advancing.
@@ -419,15 +443,17 @@ For reference, the complete execution order for each pipeline step is:
 3. Check execution mode and execute (subagent / inline / checkpoint)
 4. Post-Step Output Validation (bash gate)
 5. Veto Condition Enforcement
-6. Dashboard Handoff (to next step)
+6. Naming the Run (if due — only while run_id is still untitled-N)
+7. Dashboard Handoff (to next step)
 ```
 
 Steps 1 and 4 are binary bash gates. If either fails, the pipeline does NOT advance — the user is consulted.
 
 ### After Pipeline Completion
 
+0. If `run_id` still starts with `untitled-`, apply **Naming the Run** now (rule 3)
 1. Save final output to `squads/{name}/output/{run_id}/{filename}.md`
-   (The run folder was created during initialization — no separate date subfolder needed)
+   (The run folder was created during initialization and named after the content — no separate date subfolder needed)
 1b. **Update dashboard** — MANDATORY. Write `squads/{name}/state.json` with:
     - `"status": "completed"`
     - All agents: `"status": "done"`
@@ -441,6 +467,7 @@ Steps 1 and 4 are binary bash gates. If either fails, the pipeline does NOT adva
 After writing the final "completed" state to `squads/{name}/state.json`:
 
 1. Add the `completedAt` field (or `failedAt` if status is `failed`) with the current ISO timestamp
+1b. If `run_id` still starts with `untitled-` (failed or aborted run), apply **Naming the Run** (rule 3) before copying
 2. Copy `state.json` to the run output folder for permanent history:
    ```bash
    cp squads/{name}/state.json squads/{name}/output/{run_id}/state.json
@@ -494,7 +521,7 @@ This archives the run state for the `runs` command while keeping the squad root 
 
    Read `squads/{name}/_memory/runs.md`. Prepend one new row to the table (immediately after the header row), with:
    - `Data`: today's date in YYYY-MM-DD format
-   - `Run ID`: the `run_id` for this execution
+   - `Run ID`: the final `run_id` for this execution (the content-named folder, e.g. `caso-curupira`)
    - `Tema`: the topic or user request from this run (1 sentence max)
    - `Output`: brief description of what was generated (e.g., "Carrossel 9 slides", "Thread 7 posts")
    - `Resultado`: one of — `Aprovado` / `Rejeitado` / `Publicado` / `Abortado`
@@ -525,7 +552,7 @@ This archives the run state for the `runs` command while keeping the squad root 
 ## Pipeline State
 
 Track pipeline state in memory during execution:
-- Run ID (run_id) — the output subfolder name for this execution
+- Run ID (run_id) — the output subfolder name; starts as `untitled-N`, renamed after the topic is defined (see Naming the Run)
 - Current step index
 - Outputs from each completed step (file paths)
 - User choices at checkpoints
