@@ -31,12 +31,13 @@ export async function listRuns(squadName, targetDir = process.cwd()) {
     }
 
     for (const runId of runDirs) {
-      const run = { squad: name, runId, status: 'unknown', steps: null, duration: null };
+      const run = { squad: name, runId, status: 'unknown', steps: null, duration: null, startedAt: null };
 
       try {
         const raw = await readFile(join(outputDir, runId, 'state.json'), 'utf-8');
         const state = JSON.parse(raw);
         run.status = state.status || 'unknown';
+        run.startedAt = state.startedAt || null;
         if (state.step) run.steps = `${state.step.current}/${state.step.total}`;
         if (state.startedAt && (state.completedAt || state.failedAt)) {
           const start = new Date(state.startedAt).getTime();
@@ -51,8 +52,21 @@ export async function listRuns(squadName, targetDir = process.cwd()) {
     }
   }
 
-  runs.sort((a, b) => b.runId.localeCompare(a.runId));
+  runs.sort(compareRuns);
   return runs.slice(0, MAX_RUNS);
+}
+
+// Newest startedAt first; runs without a valid startedAt go last, by name.
+// Run folders are named after their content, so the name says nothing about order.
+function compareRuns(a, b) {
+  const ta = Date.parse(a.startedAt);
+  const tb = Date.parse(b.startedAt);
+  const aValid = !Number.isNaN(ta);
+  const bValid = !Number.isNaN(tb);
+  if (aValid && bValid) return tb - ta;
+  if (aValid) return -1;
+  if (bValid) return 1;
+  return a.runId.localeCompare(b.runId);
 }
 
 export function formatDuration(ms) {

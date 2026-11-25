@@ -86,23 +86,58 @@ test('listRuns handles malformed state.json', async () => {
   }
 });
 
-test('listRuns sorts by runId descending', async () => {
+async function makeRun(dir, runId, state) {
+  const runDir = join(dir, 'squads', 'my-squad', 'output', runId);
+  await mkdir(runDir, { recursive: true });
+  if (state !== undefined) {
+    await writeFile(join(runDir, 'state.json'), JSON.stringify(state), 'utf-8');
+  }
+}
+
+test('listRuns sorts by startedAt descending, not by name', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'osq-runs-'));
   try {
-    for (const ts of ['2026-03-17-100000', '2026-03-17-120000', '2026-03-17-080000']) {
-      const runDir = join(dir, 'squads', 'my-squad', 'output', ts);
-      await mkdir(runDir, { recursive: true });
-      await writeFile(join(runDir, 'state.json'), JSON.stringify({
-        squad: 'my-squad', status: 'completed', step: { current: 1, total: 1 },
-        startedAt: `2026-03-17T${ts.slice(11, 13)}:00:00Z`,
-        completedAt: `2026-03-17T${ts.slice(11, 13)}:01:00Z`,
-      }), 'utf-8');
+    await makeRun(dir, 'zebra', { status: 'completed', startedAt: '2026-03-17T08:00:00Z' });
+    await makeRun(dir, 'alpha', { status: 'completed', startedAt: '2026-03-17T12:00:00Z' });
+    await makeRun(dir, '2026-03-17-100000', { status: 'completed', startedAt: '2026-03-17T10:00:00Z' });
+
+    const runs = await listRuns(null, dir);
+    assert.deepEqual(runs.map((r) => r.runId), ['alpha', '2026-03-17-100000', 'zebra']);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('listRuns puts runs without startedAt last', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'osq-runs-'));
+  try {
+    await makeRun(dir, 'dated', { status: 'completed', startedAt: '2026-03-17T12:00:00Z' });
+    await makeRun(dir, 'untitled-2');
+    await makeRun(dir, 'untitled-1', { status: 'running' });
+
+    const runs = await listRuns(null, dir);
+    assert.deepEqual(runs.map((r) => r.runId), ['dated', 'untitled-1', 'untitled-2']);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
+
+test('listRuns limits to the 20 most recent', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'osq-runs-'));
+  try {
+    const letters = 'abcdefghijklmnopqrstuvwxy'.split('');
+    for (const [i, letter] of letters.entries()) {
+      const day = String(25 - i).padStart(2, '0');
+      await makeRun(dir, `run-${letter}`, { status: 'completed', startedAt: `2026-03-${day}T12:00:00Z` });
     }
 
     const runs = await listRuns(null, dir);
-    assert.equal(runs[0].runId, '2026-03-17-120000');
-    assert.equal(runs[1].runId, '2026-03-17-100000');
-    assert.equal(runs[2].runId, '2026-03-17-080000');
+    const ids = runs.map((r) => r.runId);
+    assert.equal(runs.length, 20);
+    assert.equal(ids[0], 'run-a');
+    for (const gone of ['run-u', 'run-v', 'run-w', 'run-x', 'run-y']) {
+      assert.ok(!ids.includes(gone), `${gone} should be cut`);
+    }
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
