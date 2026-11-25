@@ -30,7 +30,7 @@ Antes de começar, assista ao [vídeo de lançamento](https://www.youtube.com/wa
 
 A maneira certa de contribuir é **verticalizando**: criando novas skills, agents, squads e guias de best practices que expandem o que o opensquad pode fazer para empresas e criadores de conteúdo.
 
-O opensquad roda com `npx opensquad init` e pronto. Um gerente de equipe, um dono de empresa, um criador de conteúdo precisa conseguir usar sem ser técnico. Queremos manter essa simplicidade.
+O opensquad roda com `npx github:Resp94/opensquad init` e pronto. Um gerente de equipe, um dono de empresa, um criador de conteúdo precisa conseguir usar sem ser técnico. Queremos manter essa simplicidade.
 
 O framework é intencionalmente baseado em arquivos e leve em dependências.
 
@@ -56,7 +56,7 @@ Cada skill, guia de best practices ou agent adicionado ao projeto aumenta o tama
 
 Antes de começar a codar, vale se perguntar: **"Isso ajuda um empreendedor fazer mais em menos tempo, ou adiciona fricção?"**
 
-O opensquad roda com `npx opensquad init` e pronto. Essa simplicidade é intencional. Contribuições que vão em outra direção provavelmente não serão incorporadas - mas a gente sempre pode conversar. Abra uma [issue](https://github.com/renatoasse/opensquad/issues) antes para alinhar.
+O opensquad roda com `npx github:Resp94/opensquad init` e pronto. Essa simplicidade é intencional. Contribuições que vão em outra direção provavelmente não serão incorporadas - mas a gente sempre pode conversar. Abra uma [issue](https://github.com/renatoasse/opensquad/issues) antes para alinhar.
 
 Exemplos do que geralmente não se encaixa:
 
@@ -104,7 +104,7 @@ Não sabe por onde começar? Aqui estão algumas ideias de skills e squads que a
 Novo por aqui? Comece por aqui:
 
 1. Assista ao [vídeo de lançamento](https://www.youtube.com/watch?v=CL1ppI4qHeU) para entender a visão do projeto
-2. Rode `npx opensquad init` em uma pasta de teste para experimentar o fluxo
+2. Rode `npx github:Resp94/opensquad init` em uma pasta de teste para experimentar o fluxo
 3. Explore as skills existentes em `skills/` - veja como cada `SKILL.md` é estruturado
 4. Procure issues com a label **`good first issue`** - são tarefas simples e bem definidas
 5. Escolha uma issue (ou uma ideia da [lista acima](#ideias-de-contribuição)), comente que vai trabalhar nela, e mãos à obra
@@ -289,7 +289,7 @@ Before you start, watch the [launch video](https://www.youtube.com/watch?v=CL1pp
 
 The right way to contribute is by **verticalizing**: creating new skills, agents, squads, and best-practice guides that expand what opensquad can do for businesses and content creators.
 
-opensquad runs with `npx opensquad init` and that's it.
+opensquad runs with `npx github:Resp94/opensquad init` and that's it.
 
 A team manager, a business owner, a content creator needs to be able to use it without being technical. We want to keep that simplicity.
 
@@ -315,7 +315,7 @@ Every skill, best-practice guide, or agent added to the project increases the co
 
 Before you start coding, ask yourself: **"Does this change keep opensquad simple for non-technical users?"**
 
-opensquad runs with `npx opensquad init` and that's it. That simplicity is intentional. Contributions that go in a different direction probably won't be merged - but we can always talk. Open an [issue](https://github.com/renatoasse/opensquad/issues) first to align.
+opensquad runs with `npx github:Resp94/opensquad init` and that's it. That simplicity is intentional. Contributions that go in a different direction probably won't be merged - but we can always talk. Open an [issue](https://github.com/renatoasse/opensquad/issues) first to align.
 
 Examples of what generally doesn't fit:
 
@@ -363,7 +363,7 @@ Not sure where to start? Here are some skills and squads the community would lov
 New here? Start here:
 
 1. Watch the [launch video](https://www.youtube.com/watch?v=CL1ppI4qHeU) to understand the project vision
-2. Run `npx opensquad init` in a test folder to experience the flow
+2. Run `npx github:Resp94/opensquad init` in a test folder to experience the flow
 3. Explore existing skills in `skills/` - see how each `SKILL.md` is structured
 4. Look for issues labeled **`good first issue`** - these are simple, well-defined tasks
 5. Pick an issue (or an idea from the [list above](#contribution-ideas)), comment that you'll work on it, and get started

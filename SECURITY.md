@@ -48,7 +48,7 @@ Skills are opensquad's extension system. A skill is a directory containing a `SK
   - `script` — Can execute bash commands with the **full permissions of the local user**.
   - `mcp` — Can connect to external servers and receives tokens from `.env`.
   - `hybrid` — Combination of script and MCP capabilities.
-- **Official catalog:** Skills from the official catalog (installed via `npx opensquad install <name>`) are maintained in the opensquad repository.
+- **Official catalog:** Skills from the official catalog (installed via `npx github:Resp94/opensquad install <name>`) are maintained in the opensquad repository.
 - **Community skills:** Community-submitted skills go through code review before being accepted into the official catalog.
 - **Third-party skills:** If you install skills from other sources, review the `SKILL.md` and any scripts before use.
 

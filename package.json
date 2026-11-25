@@ -19,13 +19,13 @@
     "squads"
   ],
   "author": "Renato Asse (https://github.com/renatoasse)",
-  "homepage": "https://github.com/renatoasse/opensquad#readme",
+  "homepage": "https://github.com/Resp94/opensquad#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/renatoasse/opensquad.git"
+    "url": "git+https://github.com/Resp94/opensquad.git"
   },
   "bugs": {
-    "url": "https://github.com/renatoasse/opensquad/issues"
+    "url": "https://github.com/Resp94/opensquad/issues"
   },
   "license": "MIT",
   "engines": {

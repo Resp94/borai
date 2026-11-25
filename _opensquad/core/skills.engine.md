@@ -12,7 +12,7 @@ You are the Skills Engine. Your job is to manage skill integrations for Opensqua
 ## File Locations
 
 - **Installed skills**: `skills/` — each skill in its own subdirectory with SKILL.md
-- **Skill catalog**: `https://github.com/renatoasse/opensquad/tree/main/skills`
+- **Skill catalog**: `https://github.com/Resp94/opensquad/tree/master/skills`
 - **Skill format reference**: `skills/opensquad-skill-creator/references/skill-format.md`
 
 ## How Skills Are Detected
@@ -98,7 +98,7 @@ For the full SKILL.md specification, see `skills/opensquad-skill-creator/referen
 
 2. **Fetch SKILL.md from GitHub**:
    ```
-   https://raw.githubusercontent.com/renatoasse/opensquad/main/skills/<name>/SKILL.md
+   https://raw.githubusercontent.com/Resp94/opensquad/master/skills/<name>/SKILL.md
    ```
    - If fetch fails (404 or network error) → **ERROR**: "Skill '<name>' not found in the Opensquad catalog."
    - Do NOT proceed if the SKILL.md cannot be fetched.
@@ -112,7 +112,7 @@ For the full SKILL.md specification, see `skills/opensquad-skill-creator/referen
 
 5. **Fetch additional files** (if the skill requires them):
    - If the SKILL.md frontmatter has `script.path` → fetch the script file from:
-     `https://raw.githubusercontent.com/renatoasse/opensquad/main/skills/<name>/{script.path}`
+     `https://raw.githubusercontent.com/Resp94/opensquad/master/skills/<name>/{script.path}`
      Create subdirectories (e.g., `scripts/`) as needed.
    - If the skill has a `references/` directory mentioned → fetch those files too.
    - If the skill has an `assets/` directory mentioned → fetch those files too.
@@ -324,7 +324,7 @@ When the Architect reaches Phase 3.5 during squad creation:
 2. **Fetch the catalog index**:
    Fetch the catalog README from GitHub to see all available skills:
    ```
-   https://raw.githubusercontent.com/renatoasse/opensquad/main/skills/README.md
+   https://raw.githubusercontent.com/Resp94/opensquad/master/skills/README.md
    ```
    - If fetch fails → proceed with only installed skills (do not block squad creation).
 

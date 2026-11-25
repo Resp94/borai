@@ -47,13 +47,13 @@ Para qualquer pessoa ou equipe que queira automatizar trabalho operacional e rep
 **Pré-requisito:** Node.js 20+
 
 ```bash
-npx opensquad init
+npx github:Resp94/opensquad init
 ```
 
 Para atualizar uma instalação existente:
 
 ```bash
-npx opensquad update
+npx github:Resp94/opensquad update
 ```
 
 ## IDEs Suportadas
@@ -81,7 +81,7 @@ cd dashboard
 npm run dev
 ```
 
-Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx opensquad init` já faz isso por você.
+Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx github:Resp94/opensquad init` já faz isso por você.
 
 **Passo 2 —** Abra o endereço que aparece no terminal (normalmente `http://localhost:5173`). O escritório lê os squads da pasta `squads/` e se atualiza sozinho enquanto um squad está rodando.
 
@@ -198,15 +198,15 @@ Example:
 **Prerequisite:** Node.js 20+
 
 ```bash
-npx opensquad init
+npx github:Resp94/opensquad init
 ```
 
-> **Note:** Always run your AI IDE from inside the project directory where you ran `npx opensquad init`. The `/opensquad` command is only available when the IDE is opened in that folder.
+> **Note:** Always run your AI IDE from inside the project directory where you ran `npx github:Resp94/opensquad init`. The `/opensquad` command is only available when the IDE is opened in that folder.
 
 To update an existing installation:
 
 ```bash
-npx opensquad update
+npx github:Resp94/opensquad update
 ```
 
 ## Supported IDEs
@@ -234,7 +234,7 @@ cd dashboard
 npm run dev
 ```
 
-The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx opensquad init` already does it for you.
+The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx github:Resp94/opensquad init` already does it for you.
 
 **Step 2 —** Open the address shown in the terminal (usually `http://localhost:5173`). The office reads the squads in `squads/` and updates live while a squad is running.
 

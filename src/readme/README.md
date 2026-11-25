@@ -50,7 +50,7 @@ cd dashboard
 npm run dev
 ```
 
-Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx opensquad init` já faz isso por você.
+Na primeira vez, se as dependências ainda não estiverem instaladas, rode `npm install` dentro de `dashboard/` antes. O `npx github:Resp94/opensquad init` já faz isso por você.
 
 **Passo 2 —** Abra o endereço que aparece no terminal (normalmente `http://localhost:5173`). O escritório lê os squads da pasta `squads/` e se atualiza sozinho enquanto um squad está rodando.
 
@@ -108,6 +108,6 @@ cd dashboard
 npm run dev
 ```
 
-The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx opensquad init` already does it for you.
+The first time, if the dependencies are not installed yet, run `npm install` inside `dashboard/` first. `npx github:Resp94/opensquad init` already does it for you.
 
 **Step 2 —** Open the address shown in the terminal (usually `http://localhost:5173`). The office reads the squads in `squads/` and updates live while a squad is running.
