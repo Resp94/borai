@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [Unreleased]
 
 ### Added
+- Squad types catalog (`_opensquad/core/squad-types.yaml`): Discovery offers 8 starting points with a one-line explanation; picking one pre-fills domain, formats and suggested agents, and the Architect still tailors the squad. "Describe my own" keeps the old flow.
 - 13 ready-made Instagram agents in pt-BR (`agents/ig-*`), adapted from instagram-agent-skill (MIT, Jake Schincariol), with tasks and local Python tools adapted to Portuguese: hook score, beat sheet, humanizer/AI detector, caption linter, swipe file, profile rubric.
 - `init` installs bundled agents; `update` installs missing ones without overwriting edits. Installing an agent now copies its `tasks/` and `tools/`.
 - Design picks ready-made agents (`from_agent`) when they cover a role and match the squad language; Build copies them unchanged.

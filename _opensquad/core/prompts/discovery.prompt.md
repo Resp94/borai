@@ -32,16 +32,31 @@ All output must be in the user's preferred language (from preferences.md). If no
 
 ## Discovery Flow
 
-### Step 1 — Purpose (open-ended)
+### Step 1 — Squad Type or Purpose
 
-Ask:
-> "What do you want this squad to do? Describe the end result you want."
+Read `_opensquad/core/squad-types.yaml`. It lists types of squads that can be built — each with an icon, a name, a one-line description and the answers it pre-fills. A type is a starting point, not a ready-made squad: you still ask what is specific to the user's company.
 
-This is always the first question. Accept any answer — a sentence, a paragraph, bullet points. Do NOT assume any domain. Do NOT suggest options at this stage.
+Ask, showing the types as a **numbered text list** (not as a selector — there are more than 4), in the user's language: use `pt-BR` for Portuguese, `en` otherwise (translate `en` if the user writes in another language). Always end with "Describe my own":
+
+> "What kind of squad do you want to create? Pick a number, or describe your own."
+>
+> 1. 📸 {name} — {description}
+> 2. ...
+> 9. ✏️ Describe my own
+
+**If the user picks a type** (answers with its number or clearly names it):
+- Save `squad_type` = the type's `id`.
+- Pre-fill: `purpose` = the type's `purpose`, `domain` = the type's `domain`, `target_formats` = the type's `target_formats`, `suggested_agents` = the type's `suggested_agents`.
+- Show the pre-filled purpose and ask once: "Anything you want to adjust in this goal?" If the user adjusts or describes something different, their words replace `purpose` (the user always wins over the type).
+- Skip Step 2 (domain) and Step 6 (target formats) — they are already filled. Go to Step 3 to explore what is specific to their company.
+
+**If the user picks "Describe my own" or answers with free text instead of a number:** treat the text as `purpose` and continue with Step 2 as usual. Accept any answer — a sentence, a paragraph, bullet points. Do NOT assume any domain.
 
 ---
 
 ### Step 2 — Domain Detection
+
+Skip this step if `squad_type` was chosen in Step 1 (`domain` is already filled).
 
 After the user answers Step 1, classify their intent into one of the following domains. Do this silently — do not announce the classification, just use it to pick the right follow-up path.
 
@@ -153,7 +168,7 @@ Set `investigation.enabled: false` and continue.
 
 ### Step 6 — Target Formats (content squads ONLY)
 
-Skip this step entirely for non-content domains.
+Skip this step entirely for non-content domains, and when `squad_type` was chosen in Step 1 (`target_formats` is already filled — show them in the Step 7 summary so the user can still change them).
 
 If domain = `content`, ask:
 > "Para quais formatos/plataformas esse squad vai produzir conteúdo?"
@@ -205,6 +220,7 @@ Present a structured summary of everything collected:
 
 > "Here's what I gathered. Please confirm before I proceed:
 >
+> **Squad type:** {squad type name, or "custom"}
 > **Squad purpose:** {purpose}
 > **Domain:** {domain}
 > **Context:** {key context points from Step 3}
@@ -267,6 +283,10 @@ target_formats:  # content squads only; empty list for others
   - "{format-id}"
 
 instagram_profile: "{normalized profile folder, e.g. navalhado-io}"  # Instagram squads only; omit otherwise
+
+squad_type: "{type id from squad-types.yaml}"   # only when a type was chosen in Step 1
+suggested_agents:                               # only when a type was chosen; a hint for Design
+  - "{ready-made agent id, e.g. ig-reel}"
 ```
 
 The `squad_code` must be a short, URL-safe slug derived from the squad's purpose (e.g., `content-calendar`, `competitor-tracker`, `lead-notify`).

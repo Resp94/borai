@@ -191,8 +191,9 @@ The project may have ready-made agents installed in `agents/` (e.g. the 13 Insta
 5. **`needsInput`** → add a checkpoint right before that agent's step to collect each listed input from the user.
 6. **`writes` → `reads`** → when two ready-made agents in the squad share a memory file (e.g. `ig-viral` writes `swipe.md`, `ig-reel` reads it), order the writer's step before the reader's.
 7. Ready-made agents keep their body and tasks unchanged; Design only gives them a two-word name and an icon (naming rules below apply to them too).
-8. Record each one in `design.yaml` with `from_agent: {id}` (e.g. `from_agent: ig-reel`). Skip the `artifacts` block for them — their content already exists.
-9. If any `ig-*` agent is used, record `instagram_profile` from `discovery.yaml` in `design.yaml`. Every `ig-*` agent reads and writes the profile memory at `_opensquad/_memory/instagram/{instagram_profile}/`.
+8. If `discovery.yaml` has `suggested_agents` (from the squad type chosen in Discovery), start from that list — it is a hint, not an order. Every suggested agent still has to pass rules 2 and 4 (its `whenToUse` covers a real role and its `language` matches the squad's); drop the ones that don't and add others the squad needs.
+9. Record each one in `design.yaml` with `from_agent: {id}` (e.g. `from_agent: ig-reel`). Skip the `artifacts` block for them — their content already exists.
+10. If any `ig-*` agent is used, record `instagram_profile` from `discovery.yaml` in `design.yaml`. Every `ig-*` agent reads and writes the profile memory at `_opensquad/_memory/instagram/{instagram_profile}/`.
 
 ### Agent Naming Convention (MANDATORY — never skip)
 
