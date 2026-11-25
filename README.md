@@ -56,6 +56,19 @@ Para atualizar uma instalação existente:
 npx github:Resp94/borai update
 ```
 
+O `update` atualiza o núcleo do Borai e instala as skills novas do catálogo, mas **não mexe nas skills que você já tem instaladas**, para não apagar ajustes seus. Para atualizar uma skill instalada:
+
+```bash
+npx github:Resp94/borai update <nome-da-skill>   # só essa skill, ex.: update video-styles
+npx github:Resp94/borai skills update            # todas as skills instaladas
+```
+
+Skills opcionais (as mais pesadas, como `video-styles`) só são instaladas se você disser sim. O `init` pergunta, e o `update` pergunta uma vez em projetos que ainda não decidiram. Se você recusar, a resposta fica gravada em `_borai/_memory/preferences.md` e o Borai não pergunta de novo. Para instalar depois:
+
+```bash
+npx github:Resp94/borai install video-styles
+```
+
 ## IDEs Suportadas
 
 | IDE | Status |
@@ -100,6 +113,16 @@ Para criar um novo squad, basta selecionar a opção, e o **Arquiteto** faz algu
 ### Agentes de Instagram prontos
 
 O Borai vem com 13 agentes de Instagram em pt-BR, instalados em `agents/` no `init`: roteirista de Reels, carrossel e Stories, redator de legendas e de DMs, humanizador de texto, caçador de virais, planejador da semana, avaliador de perfil, auditor de resultados, comentarista, respondedor de comentários e garimpeiro de conteúdo. Ao criar um squad, o Arquiteto escolhe os que fazem sentido. As ferramentas deles (nota de gancho, ficha de tempo, humanizador, revisão de legenda) rodam localmente em Python, e cada perfil de Instagram tem sua própria memória em `_borai/_memory/instagram/{perfil}/`. Adaptados do [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
+
+### Estilos de vídeo (opcional)
+
+A skill `video-styles` traz 49 estilos de vídeo feitos em código: RPG em pixel, planta técnica, ukiyo-e, motion design suíço, quadro branco e outros. Ela vem com uma galeria que toca cada estilo ao vivo no navegador e com os motores que renderizam um vídeo mudo em 1080p. Cada estilo tem uma ficha em pt-BR (`skills/video-styles/styles/<estilo>/FICHA.md`) dizendo para que serve, onde trocar o conteúdo e o que evitar. A skill ocupa cerca de 28 MB e é opcional. Para abrir a galeria:
+
+```bash
+npx github:Resp94/borai galeria
+```
+
+Renderizar o vídeo final exige `ffmpeg` e, uma vez por máquina, o navegador do Playwright (cerca de 100 MB): `npm --prefix skills/video-styles run setup-render`. Os motores e o código dos estilos vêm do [Lemo-Opuscar](https://github.com/lemomo-ai/lemo-opuscar) (MIT, Lemomo/LemoLab).
 
 ## Executando um Squad
 
@@ -209,6 +232,19 @@ To update an existing installation:
 npx github:Resp94/borai update
 ```
 
+`update` refreshes the Borai core and installs new catalog skills, but **does not touch skills you already have installed**, so your own changes are kept. To update an installed skill:
+
+```bash
+npx github:Resp94/borai update <skill-name>   # just that skill, e.g. update video-styles
+npx github:Resp94/borai skills update         # every installed skill
+```
+
+Optional skills (the heavy ones, such as `video-styles`) are only installed if you say yes. `init` asks, and `update` asks once in projects that have not decided yet. If you decline, the answer is saved in `_borai/_memory/preferences.md` and Borai won't ask again. To install it later:
+
+```bash
+npx github:Resp94/borai install video-styles
+```
+
 ## Supported IDEs
 
 | IDE | Status |
@@ -251,6 +287,16 @@ The **Architect** asks a few questions, designs the squad, and sets everything u
 ### Ready-made Instagram agents
 
 Borai ships 13 Instagram agents (pt-BR), installed into `agents/` on `init`: Reels, carousel and Stories writers, caption and DM writers, a text humanizer, a viral-reels researcher, a weekly planner, a profile scorer, a results auditor, a commenter, a comment replier and a repurposer. When you create a squad, the Architect picks the ones that fit. Their tools (hook score, beat sheet, humanizer, caption linter) run locally in Python, and each Instagram profile gets its own memory at `_borai/_memory/instagram/{profile}/`. Adapted from [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) (MIT, Jake Schincariol).
+
+### Video styles (optional)
+
+The `video-styles` skill brings 49 video styles made in code: pixel RPG, blueprint, ukiyo-e, Swiss motion, whiteboard and more. It comes with a gallery that plays each style live in the browser and with the engines that render a silent 1080p video. Each style has a sheet in Portuguese (`skills/video-styles/styles/<style>/FICHA.md`) saying what it is good for, where to change the content and what to avoid. The skill takes about 28 MB and is optional. To open the gallery:
+
+```bash
+npx github:Resp94/borai gallery
+```
+
+Rendering the final video needs `ffmpeg` and, once per machine, the Playwright browser (about 100 MB): `npm --prefix skills/video-styles run setup-render`. The engines and style code come from [Lemo-Opuscar](https://github.com/lemomo-ai/lemo-opuscar) (MIT, Lemomo/LemoLab).
 
 ## Running a Squad
 
